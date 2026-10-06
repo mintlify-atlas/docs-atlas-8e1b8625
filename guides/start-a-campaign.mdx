@@ -1,0 +1,85 @@
+---
+title: "Start Your First Campaign in TableSage RPG"
+sidebarTitle: "Start a Campaign"
+description: "Create a campaign, add your first session, set attendance and roles, and optionally seed the campaign glossary before processing begins."
+---
+
+TableSage organises your recorded games as **Campaigns**, each containing one or more **Sessions**. Before you can process a recording, TableSage needs to know who was at the table, what characters they played, and where to keep everything. This walkthrough takes you from a blank workspace all the way to a Session that is ready for processing — whether this is the very first game of a brand-new campaign or a recording from an ongoing one.
+
+You need an installed TableSage workspace. If this is your first launch, complete installation and configure your keys and models first. Launch TableSage from the directory where you want to keep this campaign; see the Workspaces concept page for details.
+
+<Steps>
+
+### Open the Campaigns list
+
+From the **Welcome** screen, press **C** to open **Campaigns**.
+
+### Create a new campaign
+
+Press **N** (**New Campaign**). Fill in the following fields:
+
+- **Name** — a short, recognisable title such as *Salt Marsh*.
+- **Description** — an optional sentence about the campaign's premise.
+- **Game System** — the ruleset in use, for example *D&D 5e* or *Pathfinder 2e*.
+
+Choose **Create Campaign** to save.
+
+### Open the campaign
+
+Select your new campaign in the list and press **E** or **Enter** to open **Campaign Detail**.
+
+### Create the first session
+
+On the **Sessions** tab, press **N** (**New Session**). Give the session a useful name such as *Arrival at the Harbor*, then enter its date in `YYYY-MM-DD` format — for example `2026-10-01`. Choose **Create Session**.
+
+TableSage opens **Session Detail** for the new session. The **Attendance** list is empty; you will fill it in next.
+
+<Note>
+Use a real calendar date for every session. TableSage uses session dates to determine chronological order when it builds beginning-of-session recaps and chooses which prior-session recap to include in a summary.
+</Note>
+
+### Add attendees and roles
+
+Every person whose voice appears in the recording must be listed in **Attendance**, including the game master.
+
+1. Press **Tab** to move focus to the **Attendance** table, then press **N** (**New Attendee**).
+2. In the **Player** combo box, select an existing person or choose **\<New player…\>** and type their real-world name. TableSage creates the player record and returns you to the attendee dialog. Use full names with normal capitalisation so players who share a first name stay distinct.
+3. Add the player's role:
+   - Press **R** (**Add Role**) to enter a character name.
+   - Press **G** (**Add Game Master**) to assign the GM role.
+4. Choose **Save**, then repeat for each additional attendee.
+
+For example: *Jordan Lee* is the player and *Brother Hald* is their role. *Morgan Reyes* is the GM. A single player can hold more than one role in a session.
+
+**Save** becomes available once you have selected a player and supplied at least one role.
+
+<Note>
+The **Samples** column in the Attendance table shows how many voice samples each player's voice print was built from. A red **0** means the player has no voice print yet — this is expected for anyone joining TableSage for the first time. Their voice will be learned from this recording during processing.
+</Note>
+
+### Check attendance before continuing
+
+Before moving on, confirm that:
+
+- Every person who spoke in the recording is listed.
+- Character names are spelled correctly — these spellings flow through to every generated output.
+- The GM role is assigned to the correct player.
+
+### Optionally seed the campaign glossary
+
+This step is optional but saves correction work later. Press **Esc** to return to **Campaign Detail**, then press **G** to open the **Glossary** tab.
+
+Press **N** to add a name or term and an optional description. Add distinctive words you expect to hear, such as *Brother Hald* or *Tidewarden Coil*. If you prefer, you can let TableSage propose terms automatically from the recording during processing and add them then.
+
+See the Build and Maintain Your Campaign Glossary guide for a fuller vocabulary workflow.
+
+### Start processing
+
+Return to the session you created: press **S** to activate the Sessions tab, select your session, and press **Enter**. Then press **P** (**Process**) to begin.
+
+TableSage picks the processing workflow automatically based on attendees' voice prints:
+
+- If **any** attendee has no usable voice print, follow the [Process a Session with New Players](/guides/process-session-new-players) guide.
+- If **everyone** already has a usable voice print, follow the [Process a Session with Returning Players](/guides/process-session-returning-players) guide.
+
+</Steps>

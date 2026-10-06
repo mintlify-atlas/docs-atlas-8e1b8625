@@ -1,0 +1,138 @@
+---
+title: "Correct a Processed Session: Fix Words, Speakers, and Roles"
+sidebarTitle: "Correct Session"
+description: "Fix transcript errors, reassign speaker lines, update attendance or roles, and refresh out-of-date outputs after corrections are applied."
+---
+
+TableSage lets you reopen and rerun any completed step in the processing pipeline without starting from scratch. When you restart from a particular step, earlier results are preserved and the pipeline continues forward from that point, reopening required reviews and refreshing dependent outputs. This means a small correction — such as fixing a character's role or reassigning a misidentified speaker — typically affects only the steps downstream of where the error entered the record.
+
+## Make a Correction
+
+<Steps>
+
+### Apply any outside changes first
+
+Some corrections require a change outside the Process Session screen before you restart. Make those changes now, according to the table below.
+
+### Open Process Session
+
+On Session Detail, press **P** (**Process**). The Process Session screen lists every step and its current state.
+
+### Choose where to restart
+
+Click the appropriate step to highlight it, then choose **Restart from here** (**R**). Arrow keys move between manual review steps only; click to select an automatic step.
+
+### Work through the reviews
+
+Correct and confirm any review screens that open. Use **Continue** (**C**) to resume after a pause or after a step fails. Follow processing through to completion.
+
+</Steps>
+
+## Choose Where to Restart
+
+Use this table to find the right step for the correction you need to make.
+
+| Correction | Before restarting | Restart from |
+|---|---|---|
+| Incorrect character role | Edit Roles in **Attendance** on Session Detail. | **Assign Roles To Players** |
+| Incorrect words, speaker, or unwanted speech | None — correct these inside the review. | **Review Transcript** |
+| Repeated misheard term | Check the term in the Campaign Glossary. | **Review Transcript**, then use **Find/Replace** |
+| Fresh spelling suggestions after a glossary change | Update the Campaign Glossary on Campaign Detail. | **Suggest Spelling Corrections** |
+| Different attendees | Edit **Attendance** on Session Detail. | **Create Transcript**, using the revised attendee count |
+| Better voice recognition | Improve player voice samples first. | **Identify Speakers** |
+| Name corrections for a new player | None — correct these inside the review. | **Review Name Corrections**, when present |
+| Accepted glossary proposals | None — edit the proposals inside the review. | **Extract Glossary Terms** |
+| Fresh glossary proposals | None. | **Suggest Glossary Terms** |
+| Another attempt at generated outputs | None — keep the reviewed transcript. | **Generate Artifacts** |
+
+<Note>
+Restarting from an earlier step may reopen reviews you have already completed. Check each reopened review against the updated source, because earlier decisions may no longer be correct.
+</Note>
+
+For a single output that needs to be rewritten without touching the transcript, use [Regenerate Artifact](/guides/review-and-export#regenerate-an-individual-artifact) instead — it is faster and does not reopen any reviews.
+
+## Fix Words, Speakers, or Unwanted Speech
+
+These are the most common corrections and require no outside changes.
+
+<Steps>
+
+### Open Process Session
+
+Press **P** on Session Detail.
+
+### Restart from Review Transcript
+
+Select **Review Transcript** and press **R** (**Restart from here**). The transcript review screen reopens showing your previously confirmed transcript.
+
+### Make your corrections
+
+- Use the arrow keys to navigate, and press **Space** to toggle auto-play.
+- Press the legend's number keys to reassign a speaker after moving to a line.
+- Press **Enter** to open **Edit Utterance** and fix the text or the assigned attendee.
+- Press **D** to mark a line for removal.
+- Use **Find/Replace** to fix a repeated term across the whole transcript.
+
+### Confirm and continue
+
+Choose **Confirm** when the transcript looks right. TableSage continues through generation and updates all dependent outputs.
+
+</Steps>
+
+## Fix a Character Role
+
+<Steps>
+
+### Edit attendance
+
+On Session Detail, press **Tab** to focus the Attendance table. Select the attendee whose role is wrong and press **E** to edit. Update the role and choose **Save**.
+
+### Restart from Assign Roles To Players
+
+Press **P** to open Process Session. Select **Assign Roles To Players** and press **R** (**Restart from here**). TableSage applies the role change and refreshes all affected outputs.
+
+</Steps>
+
+## Fix Attendance (Different People)
+
+<Warning>
+Changing the number of attendees requires restarting from **Create Transcript**, which reruns transcription and speaker identification. All manual review decisions made after that point — including your reviewed transcript — will need to be redone. Export anything you want to keep before proceeding.
+</Warning>
+
+<Steps>
+
+### Edit attendance
+
+On Session Detail, add or remove attendees as needed using **N** and **D**. Press **E** to correct an existing attendee record.
+
+### Restart from Create Transcript
+
+Press **P** to open Process Session. Select **Create Transcript** and press **R** (**Restart from here**). TableSage reruns transcription and identification using the revised attendee count, then reopens all subsequent review screens.
+
+</Steps>
+
+## Restart After Improving Voice Prints
+
+If you have added or improved a player's voice samples outside this session and want those improvements reflected in this session's speaker assignments:
+
+<Steps>
+
+### Improve voice samples first
+
+Update the player's voice samples using the Players screen, or by adding samples from another session.
+
+### Restart from Identify Speakers
+
+On Session Detail, press **P**, select **Identify Speakers**, and press **R** (**Restart from here**). TableSage re-runs speaker identification with the updated voice print and then reopens Review Transcript.
+
+</Steps>
+
+## Starting the Session Over
+
+If you need to discard all processing entirely and reimport the recording from scratch, use **Clean Session**.
+
+<Warning>
+**Clean Session** permanently deletes all session artifacts, including the imported audio that TableSage stored. Export anything you want to keep — including the role transcript, summary, and ledger — before running it. The original recording file on your disk is not affected.
+</Warning>
+
+To access **Clean Session**, press **?** on Session Detail to open **Other actions**, then select **Clean Session**. After cleaning, press **P** (**Process**) to begin again from the beginning.

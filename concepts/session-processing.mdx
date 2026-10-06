@@ -1,0 +1,231 @@
+---
+title: "How TableSage Processes a Session Recording"
+sidebarTitle: "Session Processing"
+description: "Walk through each step in the TableSage processing pipeline — from audio import and transcription to speaker identification, corrections, and artifact generation."
+---
+
+**Session processing** is the pipeline that turns a raw recording into a transcript, a ledger, summaries, and all the other artifacts a group can use and share. Processing follows a fixed sequence of steps. Some run automatically; others pause and ask you to review the work before anything is built on top of it.
+
+## Before You Begin
+
+Two things must be in place before processing can start:
+
+- **Attendance.** Every Player who was at the table must be added as an attendee. A Session with no attendees cannot be processed, and missing attendees cause speaker identification to skip that person entirely.
+- **Roles.** Each attendee needs a Role for this Session — a character name, **Game Master**, or another table function. Processing replaces Player names with these Roles before generating artifacts.
+
+Processing also calls external services. You need an **ElevenLabs** key for transcription and keys for the LLM providers you have configured. These are set in **Settings** (press **S** on the Welcome screen).
+
+## Two Workflows
+
+TableSage recognizes speakers by comparing utterances against each attendee's **voice print** — a numeric reference built from their voice samples. The workflow TableSage uses depends on whether every attendee already has a usable voice print.
+
+<CardGroup cols={2}>
+  <Card title="Returning Players" icon="rotate">
+    Every attendee already has a usable voice print. Processing moves directly
+    from transcription to speaker identification — no additional steps are
+    needed to establish voices.
+  </Card>
+  <Card title="New Players" icon="user-plus">
+    At least one attendee has no usable voice print yet. Processing includes
+    extra steps to establish that person's voice from the recording before
+    speaker identification can proceed.
+  </Card>
+</CardGroup>
+
+TableSage determines which workflow to use automatically based on the attendee list. See [Players & Voices](/concepts/players-and-voices) for a full explanation of voice prints and what makes a Player "new."
+
+---
+
+## Returning Players Workflow
+
+This workflow applies when every attendee already has a usable voice print.
+
+<Steps>
+  <Step title="Import Audio">
+    You supply the Session's recording. TableSage imports it as the Session's
+    **input audio**, converting it to 16 kHz mono for transcription and voice
+    comparison, and creates a normalized copy for review playback. You can
+    optionally run noise cleaning to make speech clearer in noisy recordings;
+    the original source file is left unchanged.
+  </Step>
+  <Step title="Create Transcript">
+    ElevenLabs transcribes the recording and groups speech by speaker
+    (diarization). Filler words, false starts, and stutters are omitted, so the
+    transcript is a clean record rather than a verbatim one. TableSage then adds
+    punctuation to produce the raw machine transcript.
+  </Step>
+  <Step title="Remove Bad Utterances">
+    TableSage filters out **backchannels** — brief listener acknowledgments such
+    as *mm-hmm* that carry no independent meaning. It finds short candidate
+    phrases, then asks an LLM whether the preceding line was a question.
+    Candidates that follow a question are kept; others are removed. The original
+    transcript remains available for comparison.
+  </Step>
+  <Step title="Identify Speakers">
+    TableSage compares the voice in each utterance against the voice prints of
+    the Session's attendees. Confident matches receive a Player's name; uncertain
+    matches are left as **Unassigned Speaker** for you to resolve during
+    transcript review.
+  </Step>
+  <Step title="Extract Glossary Terms">
+    An LLM reviews the transcript and proposes names and terms that appear to be
+    new campaign vocabulary — places, factions, artifacts, and similar items.
+    **You review the proposals** and decide which to add to the Campaign
+    Glossary. Accepted terms immediately become available for the spellcheck step
+    that follows.
+  </Step>
+  <Step title="Spellcheck Against Glossary">
+    An LLM compares the transcript with the Campaign Glossary and attendees'
+    Player names, then proposes spelling corrections. **You review each
+    suggestion** before it is applied. Because the previous step has already
+    added new terms, they can be used to correct other occurrences in the same
+    Session.
+  </Step>
+  <Step title="Review Transcript">
+    Human review establishes the **reviewed transcript** — the accepted record
+    of what was said and who said it. You resolve unassigned speakers, correct
+    wrong attributions and text, and remove speech that does not belong in the
+    record. The recording remains available as evidence. This is the last quality
+    check before generation; errors left here flow into the ledger, summaries,
+    and any voice samples later taken from the Session.
+  </Step>
+  <Step title="Assign Roles to Players">
+    TableSage creates the **role transcript**, replacing Player names with their
+    Session Roles — *Thorgrim* rather than *Bob Martinez*, or *Game Master*
+    rather than *Alice Chen*. Any utterances still marked **Unassigned Speaker**
+    after review are dropped at this point.
+  </Step>
+  <Step title="Generate Artifacts">
+    An LLM builds the Session's outputs through a sequence of dependencies:
+    transcript sections are identified first (opening recap, character
+    introductions, actual play); then the **ledger** and scene breakdown are
+    compiled; then **player introductions** are collected; then the **recap
+    summary** is distilled; and finally the **session summary** is assembled
+    from the ledger with the prior Session's recap prepended.
+  </Step>
+  <Step title="Improve Player Voice Prints">
+    Suitable clips from the reviewed transcript can be added to attendees' voice
+    sample collections, refreshing their voice prints for future Sessions.
+    **TableSage always asks** whether you want to apply this step. Only a
+    carefully reviewed transcript should contribute samples — a mislabeled clip
+    teaches TableSage the wrong voice.
+  </Step>
+</Steps>
+
+<Tip>
+  For full guides on running this workflow, see
+  [Process a Session with Returning Players](/guides/process-session-returning-players).
+</Tip>
+
+---
+
+## New Players Workflow
+
+This workflow applies when at least one attendee has no usable voice print. All steps from the returning-players workflow still apply. The difference is an additional block of four steps — steps 4–7 below — inserted between **Remove Bad Utterances** and **Identify Speakers** to establish each new Player's voice from the recording.
+
+<Steps>
+  <Step title="Import Audio">
+    Same as the returning-players workflow. TableSage imports and optionally
+    cleans the recording, producing the input audio and a normalized copy for
+    playback.
+  </Step>
+  <Step title="Create Transcript">
+    Same as the returning-players workflow. ElevenLabs transcribes the recording
+    and groups speech by anonymous speaker labels.
+  </Step>
+  <Step title="Remove Bad Utterances">
+    Same as the returning-players workflow. Likely backchannels are filtered out
+    to reduce clutter before identity work begins.
+  </Step>
+  <Step title="Review Name Corrections (New Players)">
+    An LLM compares the transcript with attendees' Player and character names and
+    proposes corrections for mishearings — for example, *Thor grim* corrected to
+    *Thorgrim*. **You review which corrections to apply.**
+
+    This step matters because corrected names become identity clues for the next
+    stage. An introduction like *I'm Jordan, playing Brother Hald* or an
+    exchange addressed to *Hald* can point to who spoke, but only if the name
+    was heard correctly.
+  </Step>
+  <Step title="Isolate New Speakers (New Players)">
+    An LLM reads the Session and proposes utterances that belong to each new
+    Player, citing conversational evidence such as introductions or lines
+    addressed to that Player. It also identifies anonymous speaker labels
+    associated with each new Player.
+
+    Proposals that are not contested by competing Players and that contain enough
+    speech are retained as candidate samples. When proposals contain too little
+    speech, TableSage can supplement them from the associated anonymous speaker
+    group and filter additions for acoustic consistency.
+  </Step>
+  <Step title="Review New Speaker Assignments (New Players)">
+    **You review** whether each candidate utterance truly contains the intended
+    Player's voice. Listening to the recording is important here: a line like
+    *Hald, do the Deep Kin have a name…* mentions a character but may have been
+    spoken by a different Player entirely.
+
+    A few certain lines are more valuable than a larger collection of mixed
+    voices. When more evidence is needed, TableSage can search for speech
+    acoustically similar to the confirmed candidates and surface those additional
+    clips for review.
+  </Step>
+  <Step title="Seed Player Voice Samples (New Players)">
+    TableSage extracts the confirmed utterances into each new Player's voice
+    sample collection and computes their initial voice prints. Clips below a
+    minimum length and duplicate or outlier samples are excluded.
+
+    After this step, a new Player with enough usable samples can be recognized
+    in the rest of this Session and in future Sessions. Players with insufficient
+    evidence still require manual speaker assignment during transcript review.
+  </Step>
+  <Step title="Identify Speakers">
+    Same as the returning-players workflow, now using the newly seeded voice
+    prints for new Players alongside the existing voice prints for returning
+    attendees.
+  </Step>
+  <Step title="Extract Glossary Terms">
+    Same as the returning-players workflow. An LLM proposes new campaign
+    vocabulary for your review.
+  </Step>
+  <Step title="Spellcheck Against Glossary">
+    Same as the returning-players workflow. Proposed corrections are reviewed
+    before being applied.
+  </Step>
+  <Step title="Review Transcript">
+    Same as the returning-players workflow, with extra attention recommended for
+    new Players. Their voices were learned from a small set of samples, so
+    speaker assignments for those Players deserve careful checking before you
+    accept the reviewed transcript.
+  </Step>
+  <Step title="Assign Roles to Players">
+    Same as the returning-players workflow. Player names are replaced with
+    Session Roles in the role transcript.
+  </Step>
+  <Step title="Generate Artifacts">
+    Same as the returning-players workflow. The ledger, recap summary, and
+    session summary are built from the reviewed role transcript.
+  </Step>
+  <Step title="Improve Player Voice Prints">
+    Same as the returning-players workflow — and especially valuable for new
+    Players. A reviewed transcript can dramatically expand the number of voice
+    samples for someone who started the Session with none, greatly improving
+    their recognition in future Sessions.
+  </Step>
+</Steps>
+
+<Tip>
+  For full guides on running this workflow, see
+  [Process a Session with New Players](/guides/process-session-new-players).
+</Tip>
+
+---
+
+## Restarting a Step
+
+Processing steps are checkpointed. If you need to revisit an earlier step — for example, to accept different glossary terms or correct a speaker assignment — you can restart that step and any dependent steps that follow it. Reprocessing the affected stages restores a consistent record across all artifacts.
+
+<Warning>
+  Changing an accepted correction or speaker assignment at an earlier step makes
+  the transcripts and artifacts generated after that point stale. Always
+  reprocess the dependent stages to keep the record consistent.
+</Warning>

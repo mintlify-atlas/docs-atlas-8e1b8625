@@ -1,0 +1,95 @@
+---
+title: "Process a Session with Returning Players in TableSage"
+sidebarTitle: "Returning Players"
+description: "Step-by-step guide to processing a session when all attendees already have usable voice prints. Check attendance, process the recording, review the transcript, and generate outputs."
+---
+
+Use this guide when every attendee already has a usable voice print. This is the normal workflow for later sessions in a campaign, but it also applies to a brand-new campaign whose players already have voice samples from prior work. If anyone's voice still needs to be learned, use [Process a Session with New Players](/guides/process-session-new-players) instead.
+
+You need the session recording and configured keys and models. The steps below start from the Welcome screen.
+
+<Steps>
+
+### Open your campaign
+
+From the **Welcome** screen, press **C** to open **Campaigns**, select your campaign, and press **E** or **Enter** to open Campaign Detail. Press **S** to select the **Sessions** tab.
+
+### Create the session
+
+Press **N** (**New Session**), enter a name and optional date (`YYYY-MM-DD`), and choose **Create Session**. TableSage opens Session Detail.
+
+### Check and update attendance
+
+TableSage automatically copies the attendee list and roles from the most recently dated session before this session's date. Review the inherited list carefully:
+
+- Press **D** to remove anyone who was absent.
+- Press **N** to add anyone who is missing.
+- Press **E** to update a role that has changed — for example if a player switched characters.
+
+Include the GM and everyone else who spoke in the recording. A player's voice samples stay the same regardless of role changes; the role simply tells generated outputs which character that person played this time.
+
+### Start processing
+
+Press **P** (**Process**). Confirm that the **New Players** panel is empty — if any attendee is listed there, switch to the [New Players guide](/guides/process-session-new-players) instead.
+
+### Import the audio
+
+Press **C** (**Continue**) and choose the recording file. Supported formats are `.wav`, `.mp3`, `.m4a`, `.flac`, and `.ogg`.
+
+When TableSage asks whether to clean the audio, you can usually choose **Yes**.
+
+<Note>
+Choose **No** only if this file was already cleaned by TableSage in a previous run. Cleaning a file that has already been processed can cause a slight degradation in audio quality.
+</Note>
+
+TableSage imports the recording, creates an initial transcript, and filters likely listener acknowledgments. Progress dialogs cover this automatic work.
+
+### Extract glossary terms
+
+TableSage reviews the transcript for campaign-specific jargon — NPC names, places, organisations, and other proper nouns — and shows its suggestions on the **Extract Glossary Terms** screen.
+
+- Press **E** to edit a proposed term or its description.
+- Press **D** to remove a proposal you do not want.
+- Press **N** to add a term that was missed.
+
+Choose **Continue** to add the remaining entries to the Campaign Glossary. This step may complete automatically if there is nothing to check.
+
+### Review spelling against the glossary
+
+Within a single transcript, the same term can appear under several spellings — for example *Deathwarden Drake* and *Death Warden Drake*. TableSage proposes replacements that consolidate variant spellings to the form recorded in the Campaign Glossary.
+
+- Press **E** to edit a proposed replacement.
+- Press **D** to toggle an incorrect replacement off.
+
+Choose **Continue** when the list looks right. This step may also complete automatically if there is nothing to check.
+
+### Review the transcript
+
+**Review Transcript** is your final check of what was said and who said it. Even high-confidence speaker matches can be wrong, so check uncertain assignments and any lines whose wording could affect the record of what happened.
+
+1. Move through the lines with the arrow keys to listen and compare audio with text. Press **Space** to toggle auto-play mode, which advances through utterances automatically.
+2. To reassign a speaker, use the legend's number keys after focusing a line.
+3. Press **Enter** on a line to open **Edit Utterance** and fix the text or the assigned attendee directly.
+4. Press **D** to mark unwanted lines — crosstalk, off-topic speech, or audio artefacts — for removal.
+5. Use **Find/Replace** to correct a term that appears many times.
+
+Choose **Confirm** when the transcript is ready.
+
+<Note>
+If you leave the Review Transcript screen before confirming, TableSage offers to save your progress. You can return and continue from where you left off.
+</Note>
+
+### Finish generation
+
+TableSage applies your edits, replaces player names with their roles throughout the transcript, and generates the session's outputs.
+
+- If an earlier session needs to be rebuilt for the pre-session recap, **Prior Sessions Are Out of Date** will appear — choose **Regenerate Prior** to proceed.
+- At **Improve Player Voice Prints**, choose **Add Samples** to extract voice samples from this session and strengthen player voice prints. This is especially recommended for your first few sessions.
+
+When Process Session shows **All steps complete**, press **Esc** to return to Session Detail. The generated outputs should each show a current **●** indicator.
+
+If a step fails, fix the cause shown on its row and press **Continue** (**C**) to retry. To revisit a completed review step, select it and press **R**; see [Correct a Processed Session](/guides/correct-processed-session) for guidance on choosing the right restart point.
+
+</Steps>
+
+From here you can [review and export the session outputs](/guides/review-and-export) to share with your players, or [prepare for the next session](/guides/prepare-next-session).

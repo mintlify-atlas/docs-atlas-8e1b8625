@@ -1,0 +1,109 @@
+---
+title: "Get Advanced Help with AI Coding Agents"
+sidebarTitle: "Advanced Help"
+description: "Launch Claude Code, Codex, or Gemini CLI in your TableSage workspace to diagnose problems, inspect data, and get guided help from an AI coding agent."
+---
+
+When you are not sure how to do something in TableSage, or something is not working and standard troubleshooting has not helped, you can ask an AI coding agent. TableSage prepares your workspace for this automatically: the agent can read TableSage's own documentation for the version you have installed, examine your workspace's logs and data, and explain what to do next — all without you needing to know SQL or file paths.
+
+You reach the Advanced Help dialog in TableSage by pressing **H** on the Welcome screen. It shows the workspace directory path, lists supported agents and example questions, and confirms whether agent help files are ready. You can press **H** even while settings still need to be reviewed.
+
+## What You Need
+
+- One of these agents installed and signed in on your machine: [Claude Code](https://code.claude.com/docs), [Codex](https://learn.chatgpt.com/docs/codex/cli), or [Gemini CLI](https://github.com/google-gemini/gemini-cli). Each is a separate product from TableSage with its own account and pricing.
+- A workspace that TableSage has opened at least once. TableSage prepares the agent help files the first time it starts in a workspace, and updates them again after each application update.
+
+## Launch the Agent
+
+<Steps>
+  <Step title="Open a terminal in your workspace">
+    Navigate to the directory you launch TableSage from — the folder that contains `.tablesage/`.
+  </Step>
+  <Step title="Start your agent">
+    Run one of the following commands:
+
+    ```sh
+    claude
+    ```
+
+    ```sh
+    codex
+    ```
+
+    ```sh
+    gemini
+    ```
+  </Step>
+  <Step title="Ask your question in plain language">
+    Describe what you were trying to do and what you saw. The agent reads the help files and your workspace data to find the answer.
+  </Step>
+</Steps>
+
+## Questions That Work Well
+
+The agent handles both how-to questions and diagnostic questions:
+
+- *Why can't I open Campaigns?*
+- *How do I add a new Player to a Session?*
+- *Why did processing stop on Session 3?*
+- *What does the Ledger contain, and how is it different from the Summary?*
+
+For a problem, describe what you were doing and what you saw. The agent can check the logs and your Campaign, Session, and Player records to find the cause, then tell you which screen and action to use.
+
+## What the Agent Can Do
+
+TableSage gives the agent a set of read-only CLI commands to inspect the workspace without modifying anything:
+
+**List all available help topics:**
+
+```sh
+tablesage report-help-topics
+```
+
+**Read the full text of a specific help topic:**
+
+```sh
+tablesage output-help-topic <topic_id>
+```
+
+For example:
+
+```sh
+tablesage output-help-topic guides/advanced-help
+tablesage output-help-topic reference/troubleshooting-faq
+```
+
+**Print the workspace database schema and migration revision:**
+
+```sh
+tablesage report-schema
+```
+
+**Run a read-only SQL query against the workspace database:**
+
+```sh
+tablesage run-query "<sql>"
+```
+
+For example, to list every Campaign and Session:
+
+```sh
+tablesage run-query "SELECT c.name AS campaign, s.name AS session, s.sequence_number, s.session_date FROM session AS s JOIN campaign AS c ON c.id = s.campaign_id ORDER BY c.name, s.sequence_number"
+```
+
+The `run-query` command uses a read-only database connection. It cannot modify any data, and TableSage will refuse write operations with an appropriate error.
+
+## Privacy Considerations
+
+The agent sends what it reads to its own AI provider. That can include Campaign and Session content from your workspace — transcripts, recaps, Player names, and processing records. TableSage asks the agent to look at names, dates, and processing records before reading content, but whatever it does read leaves your computer. See [Privacy and Data Handling](/reference/privacy) for full details on what TableSage sends to outside services.
+
+## When to Use Advanced Help vs. Standard Troubleshooting
+
+Start with [Troubleshooting](/reference/troubleshooting) for common issues like dimmed menus, invalid settings, out-of-date outputs, and failed steps. Those pages answer the most frequent questions and do not require sending your workspace data to an external service.
+
+Use Advanced Help when:
+
+- The troubleshooting pages do not cover your situation.
+- You need to inspect specific records in your workspace database.
+- Processing stopped with an error and you want the agent to trace it through the logs.
+- You have a complex question about how TableSage's concepts and screens relate to each other.

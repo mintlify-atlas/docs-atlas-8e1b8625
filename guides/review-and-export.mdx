@@ -1,0 +1,113 @@
+---
+title: "Generate, Review, and Export Session Outputs"
+sidebarTitle: "Review & Export"
+description: "Check artifact freshness, regenerate out-of-date outputs, and export session files to share with your players or save for campaign records."
+---
+
+Once a session has been processed, TableSage holds its outputs — summaries, transcripts, and ledger — inside the session folder of your workspace. You can export any of these to a location of your choice to share with players or keep for your own records. You can also regenerate individual outputs at any time, and refresh an entire campaign's outputs in one step after an upgrade or before using the preparation tools.
+
+You need a session that has completed audio processing. If you have not reached that point, follow [Process a Session with New Players](/guides/process-session-new-players) or [Process a Session with Returning Players](/guides/process-session-returning-players) first.
+
+## Choose Your Artifact
+
+Different outputs serve different purposes. Use this table to pick the right one for your task.
+
+| Task | Artifact to use |
+|---|---|
+| Send players an account of the latest session | **Summary** — the player-ready session summary |
+| Read a short recap aloud at the table | **Recap Summary** |
+| Look up what happened and which facts were established | **Ledger**, exported as readable Markdown or structured JSON |
+| Check what was actually said | **Role Transcript** |
+| Build a recap that highlights threads relevant to the next session | See [Prepare the Next Session](/guides/prepare-next-session) |
+
+<Note>
+The session folder also contains internal artifacts such as Transcript Sections, Scene Breakdown, and Player Introductions. These are used by TableSage internally and are not generally intended for direct use.
+</Note>
+
+## Read the Artifacts Panel
+
+The **Artifacts** panel on Session Detail lists every user-facing output and shows a freshness indicator beside each one.
+
+| Indicator | Meaning |
+|---|---|
+| ● | **Current** — the artifact exists and nothing it depends on has changed since it was produced. |
+| ◐ | **Out of date** — the artifact exists, but something it depends on has changed since it was last generated. |
+| ○ | **Missing** — the artifact has not been produced yet. |
+
+<Note>
+An out-of-date indicator (**◐**) does not mean the artifact is wrong — it means a dependency such as the reviewed transcript or the campaign glossary has changed since the output was last written. Regenerate it when you want the latest version.
+</Note>
+
+## Export an Artifact
+
+**Export** copies an artifact out of the session to a location you choose. It never moves or modifies the original stored inside the workspace.
+
+<Steps>
+
+### Open the Export screen
+
+On Session Detail, press **X** (**Export**). This option is available as soon as at least one artifact exists.
+
+### Select the artifact
+
+Choose an artifact from the list and press **X** or **Enter**.
+
+### Choose a destination
+
+Select the folder where you want to save the file.
+
+</Steps>
+
+You can stay on the Export screen and export several artifacts in sequence without returning to Session Detail.
+
+Two details to keep in mind:
+
+- If the chosen artifact is out of date, TableSage warns you and asks whether to export it anyway.
+- The **Ledger** can be exported as **JSON** (the structured record, useful for external tools) or **Markdown** (a human-readable version). TableSage asks which format you want.
+
+After the export notification appears, open the file from the location you chose and check that it is the version you want to use. Read a summary before sharing it — especially names, commitments, and other details your players will rely on.
+
+## Regenerate an Individual Artifact
+
+Use this when the reviewed transcript is correct and current but you want TableSage to write the output again — for example, to try a different generation result from the same accepted record.
+
+<Steps>
+
+### Open Other actions
+
+On Session Detail, press **?** to open **Other actions**.
+
+### Choose Regenerate Artifact
+
+Press **R** to select **Regenerate Artifact**.
+
+### Pick what to rebuild
+
+Choose from: **Role Transcript**, **Transcript Sections**, **Ledger + Scene Breakdown**, **Player Introductions**, **Recap Summary**, or **Summary**.
+
+### Confirm
+
+TableSage rebuilds the chosen artifact and refreshes any outputs that depend on it.
+
+</Steps>
+
+<Note>
+**Regenerate Artifact** is only available when the session has a current reviewed transcript, because every generated output is built from it. If processing is already running for this session, TableSage will ask you to wait.
+</Note>
+
+## Regenerate Every Session in a Campaign
+
+From Campaign Detail, press **?** to open **Other actions**, then press **O** to choose **Regenerate All Outputs**. This refreshes every session's outputs in the campaign and is the right step to take:
+
+- After upgrading TableSage, when updated prompts mark existing outputs out of date.
+- Before using [Create Previously On or Generate Opportunities](/guides/prepare-next-session), which require every session's scene breakdown to be current.
+
+Sessions whose transcript review is not complete and current are skipped automatically. The completion message says how many were skipped. Process any skipped sessions separately, then run the action again.
+
+## If Something Fails
+
+If **Regenerate Artifact** or **Extract Glossary** fails, TableSage shows an error notification and records the failure beside the affected step on the Process Session screen. Open that screen to inspect the failure, fix the cause, and press **Continue** to retry.
+
+Export and campaign-wide regeneration failures appear as notifications. If the cause is not clear, check the session logs in your workspace for more detail.
+
+To discard all processing for a session and start over from the recording, see [Start the Session Over](/guides/correct-processed-session#starting-the-session-over). For fresh vocabulary proposals from a session, use Session Detail's **Extract Glossary** action.

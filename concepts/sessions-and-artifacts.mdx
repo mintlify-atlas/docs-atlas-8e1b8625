@@ -1,0 +1,68 @@
+---
+title: "Sessions, Processing, and Session Artifacts"
+sidebarTitle: "Sessions & Artifacts"
+description: "A Session records one occasion of play. Learn what Session Artifacts TableSage produces — transcripts, ledgers, summaries, and recaps — and how the prior recap is chosen."
+---
+
+A **Session** records one occasion of tabletop play within a Campaign. It has a name, an optional date, and a sequence number. Through processing, a Session's recording becomes a set of durable artifacts — transcripts, structured records, and summaries — that the group can read, share, and build on in future Sessions.
+
+## Session Dates and Sequence
+
+Each Session carries an optional date and a sequence number. The sequence number reflects the order in which Sessions are organized within the Campaign; the date tells TableSage where the Session falls in the chronological history of the game.
+
+Dates are used when choosing the prior Session's recap for inclusion in a new summary. Setting accurate dates ensures that TableSage selects the right preceding Session, regardless of the order in which Sessions were added to the Campaign.
+
+## Attendance and Roles
+
+TableSage maintains an **attendance record** for every Session, capturing which Players were at the table. Each attendance record stores:
+
+- The real-world **Player** (their workspace-wide identity and voice information).
+- That Player's **Roles** for this Session — the character name, **Game Master** designation, or other table function they held.
+
+Roles connect the people who spoke to their in-game identities. Generated artifacts use these Roles so that summaries and transcripts describe the fiction using the appropriate character names, not real-world Player names. See [Players & Voices](/concepts/players-and-voices) for a full explanation of the Player and Role distinction.
+
+<Note>
+  Attendance must be set up before processing begins. A Session with no
+  attendees cannot be processed, and an incomplete attendee list can cause
+  speaker identification to miss or misattribute speech.
+</Note>
+
+## Session Artifacts
+
+**Session artifacts** are the durable records TableSage derives from a Session recording. Each artifact serves a different purpose in the campaign record.
+
+| Artifact | Description |
+|---|---|
+| **Input audio** | The cleaned recording of the Session, converted and normalized for playback and voice comparison. The original source file is left unchanged. |
+| **Transcript** | The initial speech-to-text result — the raw machine transcript before any corrections or speaker assignments are reviewed. |
+| **Reviewed transcript** | The corrected version reviewed and accepted by the group. This is the trusted record of what was said and who said it. |
+| **Role transcript** | A version of the reviewed transcript where utterances are attributed to Session Roles (character names, Game Master) rather than Player names. |
+| **Ledger** | The authoritative record of what happened inside the game during the Session — events, facts, and developments, organized by scene. |
+| **Session summary** | A full, player-ready account of the Session, including an opening recap from the prior Session and any character introductions. Designed for the GM and players to read before the next session. |
+| **Recap summary** | A short recap of the Session, designed to be read aloud by the GM at the start of the following Session. |
+
+<Info>
+  Artifacts are generated in sequence and depend on one another. The ledger
+  draws from the role transcript; the session summary draws from the ledger. If
+  an earlier artifact is changed — for example, if a spellcheck correction is
+  revised — the later artifacts may become stale and need to be regenerated.
+</Info>
+
+## How the Prior Recap Is Chosen
+
+When generating a session summary, TableSage automatically includes a recap from the preceding Session to orient players. It selects that prior Session within the same Campaign using the following rules:
+
+- For a **dated Session**, TableSage uses the most recent Session that has a strictly earlier date.
+- If **no eligible dated Session** exists within the Campaign, no prior recap is included.
+
+<Warning>
+  If the chosen prior Session has no recap summary and cannot be rebuilt,
+  the generated session summary will include a <em>The prior Session recap is
+  not available</em> placeholder in place of the recap.
+</Warning>
+
+## Processing State and Freshness
+
+Processing is a sequence of steps, and each later step depends on the output of earlier ones. TableSage tracks which steps have been completed and which artifacts are current.
+
+If you revisit an earlier step — correcting a transcript, accepting different glossary terms, or changing speaker assignments — the artifacts generated after that point become out of date. Reprocessing the affected stages restores a consistent record. See [Session Processing](/concepts/session-processing) for the full pipeline and an explanation of every step.

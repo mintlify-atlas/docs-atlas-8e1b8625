@@ -1,0 +1,56 @@
+---
+title: "TableSage RPG: Turn Recordings into Campaign Records"
+sidebarTitle: "Introduction"
+description: "TableSage is a terminal app that transcribes tabletop RPG session recordings, identifies speakers, and generates summaries, ledgers, and recaps for your campaign."
+---
+
+TableSage RPG turns your session recordings into a lasting campaign record. Point it at an audio file, and it transcribes the session, matches each line to the right player's voice, and generates summaries, session ledgers, and "Previously On" recaps — everything your group needs to stay immersed in the story between sessions.
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/getting-started/installation">
+    Install dependencies, set up API keys, and launch TableSage for the first time.
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/getting-started/quickstart">
+    Create your first campaign, add a session, and process a recording end-to-end.
+  </Card>
+  <Card title="Concepts" icon="book-open" href="/concepts/workspaces">
+    Understand workspaces, players, campaigns, sessions, and how processing works.
+  </Card>
+  <Card title="Guides" icon="map" href="/guides/start-a-campaign">
+    Step-by-step walkthroughs for every common workflow, from setup to sharing.
+  </Card>
+</CardGroup>
+
+## What TableSage Does
+
+After a session you have a recording, some scattered notes, and a lot to remember. TableSage closes the gap between finishing a game and being ready for the next one:
+
+- **Transcribe and attribute** — ElevenLabs Scribe converts audio to text and separates speakers. TableSage matches each speaker to a named player using locally-computed voice prints.
+- **Generate session artifacts** — An LLM produces a structured **ledger** (what actually happened), a **session summary** (the GM-facing narrative record), and a **recap summary** (the short "Previously On" for the table).
+- **Build campaign continuity** — A campaign **Glossary** keeps names and terms consistent across sessions. The **Previously On** and **Opportunities** features surface earlier threads that deserve a callback.
+- **Keep data local** — Voice matching runs on your machine. Campaign data is stored in a folder you control. Only audio and transcript text leave your computer (to ElevenLabs and your chosen LLM provider).
+
+## How Processing Works
+
+<Steps>
+  <Step title="Import a recording">
+    Add a session to a campaign and attach your audio file. TableSage accepts any format FFmpeg can read.
+  </Step>
+  <Step title="Transcribe and diarize">
+    ElevenLabs Scribe produces a transcript with speaker labels. TableSage maps labels to players using voice prints computed locally with PyTorch and WeSpeaker.
+  </Step>
+  <Step title="Review and correct">
+    Step through the transcript to verify speaker assignments, fix mis-heard words, and apply glossary corrections. TableSage surfaces suggested fixes for you to accept or reject.
+  </Step>
+  <Step title="Generate outputs">
+    TableSage calls your configured LLM (OpenAI, Anthropic, or Gemini) to write the ledger, session summary, and recap. Export any artifact as a file to share.
+  </Step>
+</Steps>
+
+## Built With
+
+TableSage is built on Python and [Textual](https://textual.textualize.io/) for the terminal UI, [ElevenLabs Scribe](https://elevenlabs.io/) for transcription, [LiteLLM](https://github.com/BerriAI/litellm) for multi-provider LLM access, [PyTorch](https://pytorch.org/) and [WeSpeaker](https://github.com/wenet-e2e/wespeaker) for local voice recognition, and SQLite for local storage.
+
+<Note>
+TableSage requires an ElevenLabs API key plus a key for at least one of OpenAI, Anthropic, or Google Gemini. These services charge for usage based on the audio and text they process.
+</Note>

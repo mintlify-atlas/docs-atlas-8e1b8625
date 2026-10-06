@@ -1,0 +1,62 @@
+---
+title: "Campaigns and Glossaries in TableSage RPG"
+sidebarTitle: "Campaigns & Glossaries"
+description: "Campaigns organize related sessions and maintain a shared Glossary of names and terms. Learn how campaigns group sessions and how the Glossary keeps terminology consistent."
+---
+
+A **Campaign** is the long-lived home for a group of related Sessions and a campaign-specific Glossary. It holds everything that belongs to one ongoing game: the individual play Sessions that make up its history, and the reference vocabulary the group has established for that world.
+
+## Creating a Campaign
+
+When you create a Campaign, you give it:
+
+- A **name** that identifies it within the workspace.
+- An optional **description** for your own reference.
+- An optional **game system** — the RPG ruleset or setting the Campaign uses.
+
+These fields are for your organization and context; TableSage uses the Campaign primarily as a container that groups Sessions together and anchors the Glossary.
+
+## Sessions in a Campaign
+
+Every Session belongs to exactly one Campaign. The Campaign gives its Sessions a shared context and a chronological sequence. Each Session records one occasion of play; its artifacts preserve what happened and provide material that later Sessions can build on — particularly the recap summary that opens the following session.
+
+**Session dates** tell TableSage the chronological order of Sessions within the Campaign. TableSage uses this ordering when it selects the prior Session's recap to include in a newly generated session summary. See [Sessions & Artifacts](/concepts/sessions-and-artifacts) for more on how that selection works.
+
+<Note>
+  You do not need to add Sessions in chronological order, but assigning dates
+  ensures TableSage builds recaps from the correct preceding Session rather than
+  relying on creation order.
+</Note>
+
+## Glossary
+
+A **Glossary** is the Campaign-specific reference for names and terminology. It is scoped to its Campaign — the same word can mean something entirely different in another game, so each Campaign maintains its own vocabulary independently.
+
+Each Glossary entry contains:
+
+- A **term**: a proper noun, place name, faction, item, spell, or any other word that belongs to this Campaign's fiction.
+- An optional **description**: context, lore, or notes about the term that help generate accurate and relevant summaries.
+
+<CardGroup cols={2}>
+  <Card title="Spelling Corrections" icon="spell-check">
+    During transcript processing, the Glossary drives spelling corrections for
+    misheard names. Speech recognition often mishears invented or unusual words;
+    established Glossary terms give the system a reference spelling to suggest.
+  </Card>
+  <Card title="Artifact Generation" icon="scroll">
+    When generating ledgers, summaries, and recaps, the Glossary and its
+    descriptions give the AI model context about the world — helping it use
+    the right names and understand setting-specific concepts.
+  </Card>
+</CardGroup>
+
+### Building the Glossary Over Time
+
+Glossary entries are added during Session processing. At the **Extract Glossary Terms** step, TableSage proposes names and terms introduced in the Session — newly discovered places, factions, artifacts, and so on — and you decide which to accept. Accepted terms become part of the Campaign Glossary immediately and can even correct other occurrences of the same term later in the same Session's spellcheck pass.
+
+<Tip>
+  Adding descriptions to Glossary entries, not just the terms themselves, gives
+  TableSage richer context when it generates session summaries. A brief note
+  about what a faction does or where a location is can noticeably improve the
+  quality of generated artifacts.
+</Tip>

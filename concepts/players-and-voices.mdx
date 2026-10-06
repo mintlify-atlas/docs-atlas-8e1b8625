@@ -1,0 +1,81 @@
+---
+title: "Players, Voice Samples, Voice Prints, and Roles Explained"
+sidebarTitle: "Players & Voices"
+description: "Understand how TableSage represents real people at the table, learns to recognize voices from samples, and maps speakers to characters via Roles."
+---
+
+TableSage distinguishes the real people at the table from the identities they take on in play. That separation lets it recognize a speaker's voice from audio while still presenting a Session in terms of the characters and functions within the game. This page explains the building blocks behind that distinction: Players, Voice Samples, Voice Prints, and Roles.
+
+## Players
+
+A **Player** is a persistent, workspace-wide record of a real person and their voice. Create one Player for each person whose voice you want TableSage to recognize.
+
+Players are not tied to a particular Campaign — the same person can attend any Session in the workspace, across any Campaign. Their voice information travels with them everywhere in the workspace.
+
+## Voice Samples
+
+**Voice samples** are short audio recordings of a Player speaking. They give TableSage examples of that person's voice so it can identify when they are speaking in a Session recording.
+
+You can build up a Player's sample collection over time — a clearer and more varied set of samples generally gives TableSage a better basis for recognition. Samples typically come from two places:
+
+<CardGroup cols={2}>
+  <Card title="Import from Clips" icon="file-audio">
+    Import a folder of existing audio clips directly into a Player's sample
+    collection if you already have suitable recordings.
+  </Card>
+  <Card title="Extract from a Session" icon="waveform">
+    Ask TableSage to pull clips from a Session recording after you have reviewed
+    its transcript for accuracy.
+  </Card>
+</CardGroup>
+
+<Warning>
+  If you plan to extract voice samples from a Session, review the Session's
+  transcript carefully first. Mislabeled lines will pollute a Player's voice
+  samples with someone else's voice, degrading recognition quality.
+</Warning>
+
+## Voice Prints
+
+A **voice print** is a numeric reference built from a Player's voice samples. TableSage uses it to recognize that Player's voice in future recordings by comparing utterances to this reference.
+
+- A Player without usable voice samples does not yet have a voice print and cannot be matched automatically.
+- TableSage **recomputes** a Player's voice print whenever their voice samples change.
+- During computation, TableSage automatically identifies samples that sound like outliers and excludes them, so atypical recordings do not corrupt the voice print.
+
+<Info>
+  The more accurate and varied a Player's voice samples are, the more reliable
+  their voice print becomes. Even a few dozen well-labeled clips can make a
+  meaningful difference.
+</Info>
+
+## New Players
+
+A **New Player** is an attendee who does not yet have a usable voice print — typically because they have never processed a Session before and have no voice samples yet.
+
+Processing a Session that includes a New Player requires extra steps to establish that person's voice from the recording before speaker identification can proceed. See [Session Processing](/concepts/session-processing) for the full walkthrough of those additional steps.
+
+## Roles
+
+A **Role** is the identity or function a Player takes in a specific Session. Most often it is a character name, but it can also be **Game Master** or any other table function.
+
+Roles are **per-Session** — the same Player can have a different Role in each Session or Campaign. When you create a new Session, TableSage copies the attendees and Roles from the prior Session (by date) as a starting point, so you do not need to re-enter the same information for a regular group.
+
+<Note>
+  Roles are what appear in the final transcripts and summaries. Setting Roles
+  accurately before processing means generated artifacts will use the right
+  character names rather than real-world Player names.
+</Note>
+
+## Improving Voice Recognition Over Time
+
+As you process Sessions, TableSage can find high-confidence clips from the reviewed transcript and add them to a Player's voice sample collection. This optional step runs at the end of processing and is always presented as a choice — TableSage will ask whether you want to use the Session's clips to improve voice prints.
+
+A Player's recognition typically improves significantly once they have around a hundred voice samples. At that point, you generally do not need to keep adding samples unless circumstances change — for example, if the group starts playing in a new location or with a new microphone.
+
+<Tip>
+  It is strongly recommended to review your first few Sessions carefully for
+  speaker accuracy, then use the **Improve Player Voice Prints** step to build
+  up each Player's sample collection. This investment in the early Sessions pays
+  off in more reliable automatic recognition for all Sessions that follow.
+</Tip>

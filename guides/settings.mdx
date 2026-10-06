@@ -1,0 +1,99 @@
+---
+title: "Configure API Keys and Language Models in TableSage"
+sidebarTitle: "Settings"
+description: "Set ElevenLabs and LLM provider API keys, choose High, Medium, and Low model tiers, understand where keys are stored, and resolve configuration problems."
+---
+
+Before TableSage can process Sessions, it needs an ElevenLabs API key for transcription and speaker diarization, plus keys for whichever language-model providers your model selections use. Settings also lets you choose a model for each of TableSage's three processing tiers. You configure this once and the settings apply to every workspace on your machine, though model choices are per-workspace.
+
+Open Settings from the Welcome screen by pressing **S**. If a step needs a key you haven't set yet, TableSage also offers an **Open Settings** button at that point. For the usual setup, enter an ElevenLabs key, choose all three language models, supply keys for the providers those models use, then press **C** (**Continue**) to save and check the configuration.
+
+## Keys
+
+The **Keys** section has one row per service: **ElevenLabs**, **Anthropic**, **OpenAI**, and **Gemini**. A row shows dots when a key is present, whether you typed it or it came from your shell environment. Click a row and type to set or replace that key.
+
+You only need keys for services your model selections actively use, plus ElevenLabs:
+
+- **ElevenLabs** is always required. It performs transcription and speaker diarization for every Session you import.
+- **Anthropic**, **OpenAI**, and **Gemini** are required only for the providers named in your High, Medium, and Low model IDs.
+
+To remove a stored key, click its **Delete Key** button, or press **Tab** from its field to reach the button and press **D** or **Enter**. Removal takes effect when you save. A key supplied by your shell environment cannot be removed here — see the section below on environment variable overrides.
+
+## Where Keys Are Stored
+
+Keys are not part of the workspace. They are stored once per user account, in a small file outside any workspace directory. This means you configure keys once for all your workspaces, and removing a workspace directory never deletes them.
+
+| Platform | Storage path |
+|---|---|
+| Linux | `~/.config/tablesage/.env` |
+| macOS | `~/Library/Application Support/tablesage/.env` |
+| Windows | `%LOCALAPPDATA%\tablesage\.env` |
+
+Saving a key change updates the shared file and the current TableSage instance. If you have other TableSage instances running, restart them to load the change. Shell environment variables still take precedence over stored keys.
+
+## Shell Environment Variable Overrides
+
+Before reading its stored keys, TableSage checks your shell environment for these variables:
+
+```sh
+ELEVENLABS_API_KEY
+ANTHROPIC_API_KEY
+OPENAI_API_KEY
+GEMINI_API_KEY
+```
+
+If any of these are set, they override the corresponding stored key. When a key comes from the environment:
+
+- The key field shows dots but is disabled, and its tooltip says the key is provided by your shell environment and overrides the stored one.
+- The field is not editable.
+- **Delete Key** cannot remove it — the environment variable stays active until you change your shell configuration.
+
+## Models: High, Medium, and Low
+
+Choose a model for each of TableSage's three tiers. Each tier is used for different parts of processing:
+
+| Tier | Default | Used for |
+|---|---|---|
+| **High** | `openai/gpt-6-astra` | Session artifacts and regeneration; Previously On and Opportunities |
+| **Medium** | `anthropic/claude-sonnet-4-5` | Glossary extraction and spellcheck; new-player name corrections and speech proposals |
+| **Low** | `anthropic/claude-haiku-4-5` | **Remove Bad Utterances** |
+
+Each field is a dropdown of bundled presets across Anthropic, OpenAI, and Gemini. If you want a different model from one of those three providers, choose **Custom…** and enter the model ID manually. A custom ID must take the form `provider/model-name`, where `provider` is exactly `anthropic`, `openai`, or `gemini`. Other providers are not supported.
+
+### Choosing the Right Model for Each Tier
+
+**High:** use your most capable model for lengthy transcripts and campaign history. It writes the Session artifacts — Ledger, Scene Breakdown, Summary, and Recap Summary. **Create Previously On** also uses it at all three stages: gathering ingredients, recommending Scenes, and writing the final recap. Cost depends on the model and the amount of text it processes, so factor that in for long campaigns.
+
+**Medium:** choose a model that handles invented names and conversational context well. You review its proposals before they are applied, so a balance of quality and speed works well here. New-player identity work can require it to read the whole transcript.
+
+**Low:** a fast, inexpensive model handles batches of short phrases during **Remove Bad Utterances**, checking whether each phrase follows a question. This step tries to preserve answers while removing listener acknowledgments, but meaningful replies can still be removed — review the results carefully.
+
+## Saving Settings
+
+Choose **Continue**, or move focus out of an editable key field and press **C**, to save. Saving performs three things in sequence:
+
+<Steps>
+  <Step title="Validate and write to disk">
+    TableSage validates every model ID and writes your settings and any key changes to disk.
+  </Step>
+  <Step title="Test each configured model">
+    TableSage sends a very short test message to each of your three configured models, using your saved keys. If a model test fails, Settings stays open and shows which model failed and why. Your settings are still saved — correct the key or model ID and save again.
+  </Step>
+  <Step title="Download local models">
+    If every model responds, TableSage downloads any local audio-processing models that are not already installed (noise removal, voice embeddings, and punctuation). This may take a while the first time; once installed, this step finishes immediately on later saves.
+  </Step>
+</Steps>
+
+<Note>
+  The ElevenLabs key is not tested during this save process. It is first used when you upload audio during **Create Transcript**.
+</Note>
+
+## Troubleshooting Settings Problems
+
+**Campaigns and Players are dimmed after saving.** TableSage unlocks Campaigns and Players only when `settings_version` in `.tablesage/settings.yaml` matches the version the installed TableSage expects. If they are still dimmed, the last save may not have completed. Open **Settings**, press **Continue**, and read any message under the form.
+
+**"Invalid settings file" at launch.** `.tablesage/settings.yaml` is not valid YAML, or a value is out of range or the wrong type. The message names the file and the setting that failed. Correct the value with a text editor, or rename the file and let TableSage create a fresh default at the next launch. Your API keys are not stored in this file, so they are kept either way.
+
+**A model test fails with a key that looks right.** A failed connection test usually means a shell environment variable is overriding the stored key with a different value. Check whether `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, or `GEMINI_API_KEY` is set in your shell, and whether it matches the key you intend to use.
+
+**A key field is disabled and shows no Edit option.** The key is coming from a shell environment variable. To change it, update or unset that variable in your shell configuration — TableSage cannot override or remove it from the Settings screen.

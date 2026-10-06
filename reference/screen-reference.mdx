@@ -1,0 +1,122 @@
+---
+title: "TableSage Screen Reference: Every Screen and Key Binding"
+sidebarTitle: "Screen Reference"
+description: "Reference for every screen in TableSage: navigation hierarchy, key bindings, Other Actions menus, and common UI patterns shared across all screens."
+---
+
+TableSage is a terminal application organized as a tree of screens. You navigate down by opening items and back up with **Esc**. This reference documents every screen: what it shows, every key it responds to, the secondary actions in its **Other actions** menu, and the dialogs it opens. For step-by-step help with a task, start from the Guides. For the concepts behind the application, see the Concepts section.
+
+## Screen Hierarchy
+
+The screens nest in a single tree rooted at the Welcome screen. **Esc** takes you back up one level from anywhere.
+
+```text
+Welcome
+├── Settings
+├── Campaigns
+│   └── Campaign Detail
+│       ├── Session Detail
+│       │   ├── Export Artifact
+│       │   └── Process Session
+│       │       └── review screens (one per review step)
+│       ├── Create Previously On
+│       └── Generate Opportunities
+└── Players
+    └── Player Detail
+        └── Review Outliers
+```
+
+## Every Screen at a Glance
+
+<Note>
+  TableSage's footers are designed for a 140-column terminal. In a narrower terminal, some footer labels can be cut off, but all key bindings still work.
+</Note>
+
+| Screen | How to reach it | Primary actions |
+|---|---|---|
+| Welcome | TableSage starts here | **C** Campaigns, **P** Players, **S** Settings, **H** Advanced Help |
+| Settings | **S** on Welcome | **C** Continue (save and check), **D** Delete Key, **Esc** Back |
+| Campaigns | **C** on Welcome | **N** New Campaign, **E**/**Enter** Open, **D** Delete |
+| Campaign Detail | **E**/**Enter** on a Campaign | **N** New Session / New Entry, **E** Edit, **D** Delete, **M** Edit Metadata, **G** Glossary tab, **S** Sessions tab |
+| Session Detail | **E**/**Enter** on a Session | **P** Process, **X** Export, **M** Edit Metadata, **N**/**E**/**D** manage attendees |
+| Export Artifact | **X** on Session Detail | **X**/**Enter** Export, **Esc** Back |
+| Process Session | **P** on Session Detail | **C** Continue, **R**/**Enter** Restart from here, **↑↓** move between steps |
+| Processing review screens | Opened by Process Session | Varies by step — see below |
+| Players | **P** on Welcome | **S** From Session, **N** New Player, **E**/**Enter** Open, **D** Delete |
+| Player Detail | **E**/**Enter** on a Player | **F** Folder Import, **M** Edit Metadata, **V** Review Outliers, **P** Play, **D** Delete Voice Clip |
+| Review Outliers | **V** on Player Detail | **C** Continue, **L** Load 20 More, **R** Replay, **D** Delete Clip, **Esc** Cancel |
+| Create Previously On | **V** in Campaign Detail's Other actions | **C** Continue (both stages), **Space**/**Enter** select ingredients/Scenes |
+| Generate Opportunities | **Y** in Campaign Detail's Other actions | **G** Generate, **C** Continue (save), **Esc** Back |
+
+## Common UI Patterns
+
+### Navigation and Quitting
+
+| Key | What it does |
+|---|---|
+| **E** or **Enter** | Opens the highlighted row when a screen presents a list. |
+| **Esc** | Goes back to the screen you came from. On screens with unsaved work, TableSage asks first. |
+| **Ctrl+Q** | Quits TableSage from any screen, including while dialogs are open. The footer shows it only on the Welcome screen, but it works everywhere. |
+
+### New, Edit, and Delete on Lists
+
+Most screens are built around a list, and the same three key bindings manage items:
+
+| Key | Action |
+|---|---|
+| **N** | **New.** Adds an item, usually through a small dialog. |
+| **E**, **Enter** | **Edit.** Opens the highlighted item's detail screen or editing dialog. |
+| **D**, **Delete**, **Backspace** | **Delete** the highlighted item. Saved items ask for confirmation first. |
+
+These list keys appear on the Campaigns and Players lists, the Sessions and Glossary tabs of Campaign Detail, the attendance table on Session Detail, and the correction and glossary lists during processing reviews.
+
+### Other Actions (Secondary Actions)
+
+Five screens have a secondary actions menu, opened with **?** or **/**:
+
+| Screen | Secondary actions |
+|---|---|
+| Campaigns | Clean Up, Export Campaign, Import Campaign |
+| Campaign Detail | Export Glossary, Import Glossary, Clean Up, Regenerate All Outputs, Generate Opportunities, Create Previously On |
+| Players | Recompute All Voice Prints, Import Players, Export Players, Clean Up |
+| Player Detail | Recompute, Clean Up |
+| Session Detail | Regenerate Artifact, Clean Session, Extract Glossary |
+
+Each secondary action's key also works directly on the screen without opening the menu. An action that cannot be used right now is shown dimmed in the menu — choosing it does nothing.
+
+### Unavailable and Hidden Actions
+
+- A **dimmed** action cannot be used right now. For example, **Export** on Session Detail stays dimmed until the Session has at least one artifact.
+- A **hidden** action does not apply to the current view at all. For example, Campaign Detail shows **G Glossary** only on the Sessions tab.
+
+While a text field has focus, letter keys type into the field instead of running actions. To use **C Continue** on a text-entry screen, press **Tab** to move focus out of the field first, or click the button.
+
+### Processing Review Screens
+
+Process Session opens these review screens in sequence as it reaches each review step:
+
+1. **Import Audio** — choose the session recording file
+2. **Review Name Corrections** — new Players only; correct misheard names before speaker identification
+3. **Review New Speaker Assignments** — new Players only; confirm which lines each new Player spoke
+4. **Extract Glossary Terms** — accept, correct, or remove AI-proposed glossary entries
+5. **Spellcheck Against Glossary** — keep or remove proposed find-and-replace corrections
+6. **Review Transcript** — check speaker assignments and fix transcript text line by line
+7. **Rebuild Prior Sessions** — only when earlier Sessions have out-of-date outputs
+8. **Improve Player Voice Prints** — choose whether to add samples from this Session
+
+Each review screen records only your decision. Confirming lets the run continue; cancelling ends the run at that step, and you can resume later with **C** (**Continue**) on the Process Session screen.
+
+### Notifications
+
+Short messages appear in the lower-right corner. Information and warnings disappear after a few seconds. **Errors stay until you click them**, so you do not miss them.
+
+### Shared Keys Across All Screens
+
+| Key | What it does |
+|---|---|
+| **Esc** | Back, or Cancel in a dialog |
+| **Ctrl+Q** | Quit TableSage |
+| **F5** | Reload data on Campaigns List, Campaign Detail, Players List, Player Detail, Session Detail, and Process Session |
+| **Tab**, **Shift+Tab** | Move focus between tables, fields, and buttons |
+
+Keys are not case-sensitive: **n** and **N** do the same thing.

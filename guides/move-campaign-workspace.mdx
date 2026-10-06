@@ -1,0 +1,92 @@
+---
+title: "Move a Campaign to a New TableSage Workspace"
+sidebarTitle: "Move Campaign"
+description: "Export players and campaign history, import them into a new workspace in the correct order, and verify the transfer is complete."
+---
+
+You might need to move a Campaign to a new workspace when switching to a different machine, reorganizing your files into a new folder, or sharing a Campaign with another person. Exporting creates archives and leaves the source workspace completely intact — nothing is deleted or moved from the source.
+
+To complete the transfer you need access to both workspaces, enough disk space for the archives and any imported recordings, and TableSage installed on the destination computer if it is a different machine. A workspace is the directory from which you launch TableSage.
+
+<Warning>
+  Players must be imported **before** the Campaign. Campaign import requires every Session attendee to already exist in the destination workspace with the exact same name. If you import the Campaign first, it will fail with a "Missing player" error.
+</Warning>
+
+## Export from the Source Workspace
+
+Finish or stop any active processing before exporting.
+
+<Steps>
+  <Step title="Export Players">
+    From the Welcome screen, press **P** to open **Players**. Open **Other actions** (**?**) and choose **Export Players** (**X**). Save `players.zip` somewhere you can access from the destination. This exports every workspace Player and their voice clips.
+  </Step>
+  <Step title="Export the Campaign">
+    Return to the Welcome screen, press **C**, and highlight the Campaign you want to transfer. Open **Other actions** (**?**) and choose **Export Campaign** (**X**). Save `campaign.zip` alongside the player archive.
+  </Step>
+</Steps>
+
+The campaign archive includes its Session records, attendance and Roles, Glossary, and campaign files. Players and their voice samples travel in the separate player archive because Players are shared across the whole workspace, not tied to a single Campaign. Keep both files together for the transfer.
+
+## Open the Destination Workspace
+
+Exit TableSage, then create or choose the destination directory and launch TableSage from it:
+
+```sh
+mkdir -p ~/Documents/tablesage-new
+cd ~/Documents/tablesage-new
+tablesage-rpg
+```
+
+<Steps>
+  <Step title="Configure Settings in the new workspace">
+    In a new workspace, press **S** on the Welcome screen, check your keys and model choices, and choose **Continue** to save and check Settings before importing. Players and Campaigns remain unavailable until settings are saved.
+  </Step>
+</Steps>
+
+<Note>
+  On the same computer and user account, your existing API keys are shared with the new workspace. On a different computer or user account, configure them again — the archives do not include keys. Model choices are workspace-specific, so check them in either case.
+</Note>
+
+## Import Players First
+
+<Steps>
+  <Step title="Open Players">
+    From the destination Welcome screen, press **P**.
+  </Step>
+  <Step title="Import Players">
+    Open **Other actions** (**?**) and choose **Import Players** (**I**). Select `players.zip` and wait for voice prints to be recomputed.
+  </Step>
+  <Step title="Review the result">
+    Read the completion notification and check the Players List to confirm all expected Players are present with their voice clips.
+  </Step>
+</Steps>
+
+Existing Players are matched by name, ignoring capitalization and surrounding spaces, and their clips are merged. Identical clips are skipped. If the destination workspace already has Players, make sure matching names refer to the same people before importing.
+
+<Warning>
+  Name matching during Player import is case-insensitive, but Campaign import uses exact names. For example, if the destination already has a Player named *priya patel* and the archive's attendee is *Priya Patel*, Player import merges Priya's clips into *priya patel*, but Campaign import will report *Missing player: Priya Patel*. If this happens, check the reported missing name and either correct the destination Player's name or re-export from the source.
+</Warning>
+
+## Import the Campaign
+
+<Steps>
+  <Step title="Open Campaigns">
+    Return to the Welcome screen and press **C**.
+  </Step>
+  <Step title="Import the Campaign">
+    Open **Other actions** (**?**) and choose **Import Campaign** (**I**). Select `campaign.zip`.
+  </Step>
+  <Step title="Verify the transfer">
+    Open the imported Campaign and check its **Sessions** and **Glossary** tabs. Open a processed Session to inspect attendance, Roles, and available artifacts.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+**Import reports "Missing player."** Return to Players and import the player archive, or correct the destination Player's name so it matches the archived attendee name exactly, then retry the Campaign import.
+
+**A Campaign with the same name already exists.** Import into a different workspace, or resolve the name conflict in the destination before retrying. Campaign import is not a merge into an existing Campaign.
+
+**The archive is rejected.** Always use TableSage-generated archives. If an archive is rejected, read the listed problems and re-export from the source rather than editing the ZIP by hand.
+
+**The campaign folder name does not match.** TableSage finds a Campaign's files by name: a Campaign named *Iron Pact* keeps its files in `campaigns/Iron Pact/`. If a folder was renamed, moved, or deleted outside TableSage, the Campaign no longer finds its files. Rename the folder back to exactly the name TableSage shows. Always rename Campaigns inside TableSage — it moves the folder for you.

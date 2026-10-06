@@ -1,0 +1,66 @@
+---
+title: "Process a Session with New Players in TableSage"
+sidebarTitle: "New Players"
+description: "Step-by-step guide to processing a session when one or more attendees lack a voice print. Covers sample collection, speaker review, transcript editing, and output generation."
+---
+
+Use this guide when at least one attendee has no usable voice print yet — either because this is the very first recording in your workspace, or because someone new has joined the table. TableSage runs extra steps to learn each new player's voice from the recording itself, using conversational cues to identify who is speaking before asking you to confirm the results.
+
+You need the session recording, configured keys and models, and a Session with correct attendance and roles. If you have not set those up, follow [Start Your First Campaign](/guides/start-a-campaign) first. For a session in an existing campaign, create the session on its Sessions tab, verify any inherited attendees, and add the new person with **N** on Session Detail.
+
+<Steps>
+
+### Verify attendance before processing
+
+On Session Detail, confirm that every person who spoke in the recording appears in **Attendance** — including the GM — and that all character names and roles are correct. Mistakes caught now avoid a restart later.
+
+### Start processing
+
+Press **P** (**Process**). The **Process Session** screen opens and the **New Players** panel lists the attendees whose voices need to be learned.
+
+### Import the audio
+
+Press **C** (**Continue**) and choose the recording file. Supported formats are `.wav`, `.mp3`, `.m4a`, `.flac`, and `.ogg`.
+
+When TableSage asks whether to clean the audio, you can usually choose **Yes**.
+
+<Note>
+The clean-audio option exists to protect recordings that TableSage has already cleaned during a previous run. Cleaning an already-cleaned file a second time can cause a slight degradation in audio quality. If this is the first time you are importing this recording, choose **Yes**.
+</Note>
+
+TableSage imports the recording, creates an initial transcript, and filters likely listener acknowledgments. Progress dialogs cover this automatic work; no input is needed until the first review screen appears.
+
+### Review name corrections
+
+TableSage sends the transcript and the session's attendance record to an LLM, which identifies likely typos and misspellings of player and character names. The **Review Name Corrections** screen shows each proposed **From → To** replacement so you can approve or reject it.
+
+- Press **E** or **Enter** to accept and edit a proposed replacement.
+- Press **D** to delete an incorrect proposal.
+- Press **N** to add a correction that was missed.
+
+For example, keep a correction from *Brother Held* to *Brother Hald* if that is the character's correct name. These replacements are applied across the full transcript, so check each one before continuing.
+
+Choose **Continue** when the remaining corrections look right.
+
+### Confirm voice samples for new players
+
+Now that names are normalised, TableSage uses the corrected transcript to infer who is speaking, based on cues such as players addressing each other by name. The **Review New Speaker Assignments** screen lets you verify which lines it has attributed to each new player. The lines you keep become that player's initial voice samples, so listen carefully and only keep lines you are certain belong to them.
+
+1. Select a player in the **Players** pane, then press **Enter** to focus their **Utterances** list.
+2. Move through the lines with the arrow keys or mouse to hear each clip.
+3. Press **D** to mark a wrong or uncertain line for removal. Press **D** again on a marked line to restore it.
+4. If the **Players** list shows a warning that a player does not have enough audio for a useful voice print, select that player and press **F** (**Find More**). TableSage finds the utterances in the transcript that sound most similar to the ones already in the list and marks additions with **+**. Listen to each addition and remove any that belong to someone else.
+
+<Note>
+Aim for roughly one minute of confirmed audio per new player when you can. More varied samples give TableSage a stronger basis for recognising that person in future sessions.
+</Note>
+
+5. Select the next player from the Players list and repeat until every new player has been reviewed. Choose **Confirm** when you are satisfied with all candidates.
+
+TableSage seeds voice samples from the confirmed lines and then identifies speakers throughout the rest of the recording. Lines it cannot match with confidence remain unassigned for review in the transcript.
+
+### Continue with the returning-players steps
+
+The remaining steps are identical to those used when all players are returning. Continue from **Extract Glossary Terms** in the [Process a Session with Returning Players](/guides/process-session-returning-players) guide and follow that guide through transcript review, output generation, and the option to improve voice prints.
+
+</Steps>

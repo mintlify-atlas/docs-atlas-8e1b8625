@@ -1,0 +1,125 @@
+---
+title: "Troubleshooting TableSage: Common Issues and Fixes"
+sidebarTitle: "Troubleshooting"
+description: "Answers to common TableSage problems: dimmed menus, invalid settings, out-of-date outputs, failed steps, and how to inspect workspace data."
+---
+
+This page answers problems the other pages do not explain, including how TableSage's stored data relates to what its screens show. Most questions here involve things that happen behind the screens, so some answers mention files in the workspace and database tables you can inspect with `tablesage run-query`. See [Advanced Help](/guides/advanced-help) for how to use those commands. Do not edit TableSage's files or database by hand — make changes in TableSage itself.
+
+## When TableSage Seems Blocked
+
+<AccordionGroup>
+  <Accordion title="Why are Campaigns and Players dimmed after I saved Settings?">
+    TableSage unlocks Campaigns and Players only when `settings_version` in `.tablesage/settings.yaml` matches the settings version that the installed TableSage expects. Saving on the Settings screen writes that number.
+
+    If Campaigns and Players are still dimmed after saving, the last save may not have completed successfully. Open **Settings**, press **C** (**Continue**), and read any message under the form.
+
+    If `settings_version` is higher than the installed version expects, TableSage refuses to open the workspace with *This workspace uses a newer settings schema*. A newer version of TableSage has used this workspace; open it with that version.
+
+    A version update that adds new settings raises the expected number, which is why an update can ask you to review settings again even though you set them up previously.
+  </Accordion>
+
+  <Accordion title="Why does TableSage stop at launch with 'Invalid settings file'?">
+    `.tablesage/settings.yaml` is not valid YAML, or a value in it is out of range or the wrong type. The error message names the file and the specific setting that failed.
+
+    Correct that value with a text editor, or rename the file and let TableSage create a fresh default on the next launch. Your API keys are not stored in this file, so they are kept either way.
+  </Accordion>
+
+  <Accordion title="Why does creating a Campaign, Player, or Session ask me to clear a folder?">
+    **Delete** removes an object's database record but leaves its folder on disk until you run **Clean Up**. If you create a new object whose folder would have the same path as a leftover folder, TableSage asks whether to delete the leftover to make room. Clearing it permanently removes the old files, so copy anything you want to keep first.
+
+    This most often happens with Sessions. A new Session is numbered one higher than the highest-numbered Session that still exists in the Campaign. After you delete the most recent Session, the next one you create gets the same number, and the deleted Session's folder is still on disk.
+  </Accordion>
+
+  <Accordion title="Why does Export Campaign say the campaign folder is missing?">
+    TableSage finds a Campaign's files by the Campaign's name: a Campaign named *Iron Pact* keeps its files in `campaigns/Iron Pact/`. Players work the same way under `players/`. If a folder was renamed, moved, or deleted outside TableSage, the Campaign or Player can no longer find its files.
+
+    Rename the folder back to exactly the name TableSage shows. Always rename Campaigns and Players in TableSage — it moves their folders for you.
+  </Accordion>
+</AccordionGroup>
+
+## Outputs and Freshness
+
+<AccordionGroup>
+  <Accordion title="Why is an output marked out of date, or why does a current output show old details?">
+    Each processing step builds on the outputs of earlier steps. When a step completes, TableSage records a fingerprint of every input it used in `processing_state.json`. If one of those inputs changes later — for example after rerunning an earlier step, correcting the transcript, or changing a review decision — the outputs built from it are marked **◐** (out of date) on Session Detail. Rebuild them from Session Detail.
+
+    Some details are **not** fingerprinted: attendance, Roles, Session dates, Glossary entries, and model choices. After changing any of these, existing outputs stay marked **●** (current) but still reflect the old details. To apply the change, regenerate the outputs that should include it. See [Processing State and Freshness](/reference/processing-state) for the complete list of what is and is not tracked.
+
+    An output can also be out of date when a required companion output is missing, a completion record is absent or incomplete, a required input was never recorded, or an upstream step is out of date. Existing files alone do not prove completed, current processing.
+  </Accordion>
+
+  <Accordion title="Why did my unfinished review edits disappear?">
+    When you cancel a review step with unsaved work, TableSage keeps it as a draft tied to the exact transcript you were reviewing. If that transcript changes before you return — for example because an earlier step ran again — the draft no longer matches and TableSage discards it rather than apply your edits to different text.
+
+    To avoid losing review work, complete the review in one session, or save a draft before leaving the review screen. If you need to restart an earlier step, complete or export any review work in the later step first.
+  </Accordion>
+</AccordionGroup>
+
+## Finding What Went Wrong
+
+<AccordionGroup>
+  <Accordion title="Can I rerun a completed automatic step?">
+    Yes. On Session Detail, press **P** (**Process**), click the automatic step's row to highlight it, then press **R** (**Restart from here**). Arrow keys move between review steps only and skip automatic rows, but clicking selects any row. Restart is available when processing is idle and free of blockers.
+
+    Restarting before **Review Transcript** discards its saved edits and drafts, so choose the latest step that can apply your correction. See [Processing State and Freshness](/reference/processing-state#restart-a-completed-step) for details.
+  </Accordion>
+
+  <Accordion title="Where can I see why a step failed?">
+    Process Session shows each step's last failure message beside the step. The same message is kept in the `failures` section of the Session's `processing_state.json`, in `campaigns/<Campaign name>/<Session number>/`.
+
+    The full record is in `.tablesage/logs/tablesage.log`, which has one JSON event per line. Each event names its operation in `op`, and failed operations have `"level": "error"` and an `error` field describing the problem.
+
+    `.tablesage/logs/prompts/` holds the prompts TableSage sent to language models and the replies, which helps when a generated output looks wrong or unexpected.
+  </Accordion>
+
+  <Accordion title="Where are my API keys?">
+    API keys are not stored in the workspace. They are stored once per user account, outside any workspace directory, and shell environment variables can override them.
+
+    See [Where Keys Live](/guides/settings#where-keys-live) for the exact file path per platform (Linux, macOS, Windows), and [Shell Environment Variable Overrides](/guides/settings#shell-environment-variable-overrides) for the `ELEVENLABS_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, and `GEMINI_API_KEY` variables.
+
+    A failed connection test with a key that looks correct usually means an environment variable is overriding it with a different value.
+  </Accordion>
+</AccordionGroup>
+
+## Reading Workspace Data
+
+<AccordionGroup>
+  <Accordion title="Where is a Session's processing progress stored?">
+    In the Session's folder on disk, not the database. `campaigns/<Campaign name>/<NNN>/` holds the recording, transcripts, and generated outputs as files, plus `processing_state.json`.
+
+    That file records:
+    - Each completed step and the fingerprints of its inputs (`records`)
+    - Review decisions and suggestions (`sections`)
+    - Unfinished drafts (`drafts`)
+    - Each step's last failure message (`failures`)
+
+    `processing_state.json.bak` is its previous version. The database's `session.status` column does not reflect processing progress.
+  </Accordion>
+
+  <Accordion title="How do records and folders correspond?">
+    - A Campaign's folder is `campaigns/<campaign.name>/`
+    - A Session's folder is `campaigns/<Campaign name>/<NNN>/`, where `NNN` is `session.sequence_number` with three digits, such as `004`
+    - A Player's folder is `players/<player.name>/`
+
+    A folder with no matching database record belongs to something that was deleted. It is not a live Campaign, Session, or Player. **Clean Up** (in **Other actions** on the relevant list) removes it.
+  </Accordion>
+
+  <Accordion title="How are IDs stored?">
+    IDs are UUIDs stored as 32-character hexadecimal text without dashes, in `campaign.id`, `session.campaign_id`, and the other ID columns. Join on these columns rather than on names.
+  </Accordion>
+
+  <Accordion title="Which settings and database versions does this TableSage expect?">
+    Run `tablesage report-schema` in your workspace to print:
+
+    ```sh
+    tablesage report-schema
+    ```
+
+    This prints the database's current migration revision and the revision the installed TableSage expects, plus the expected settings version. Compare the expected settings version with `settings_version` in `.tablesage/settings.yaml`.
+
+    If the database revision is older, launching TableSage will migrate it. If the revision is newer than the installed version recognizes, it may belong to a newer version of TableSage.
+
+    These read-only commands do not run migrations. A missing or outdated agent guide produces a warning but does not require launching the application before diagnosis.
+  </Accordion>
+</AccordionGroup>

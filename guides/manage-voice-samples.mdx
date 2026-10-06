@@ -1,0 +1,105 @@
+---
+title: "Improve Player Voice Recognition with Better Samples"
+sidebarTitle: "Voice Samples"
+description: "Add high-confidence voice clips from processed sessions, review outlier samples, recompute voice prints, and maintain accurate speaker identification over time."
+---
+
+TableSage identifies who is speaking by comparing each line of audio against each Player's voice print — a model built from that person's voice clips. The more accurate those clips are, the more reliably TableSage assigns lines to the right speaker. Use this guide when recognition needs better samples, when a voice print has picked up the wrong person's voice, or when you have separate recordings you want to use as voice references. From the Welcome screen, press **P** to open the **Players** list.
+
+## When and Why to Improve Voice Samples
+
+The Players List shows how many **Samples** each Player's voice print was built from (a red **0** means no voice print yet) and whether their **Voice Print** is *ready*. Better samples help when:
+
+- A Player was newly added and has few or no clips.
+- Speaker assignments in recent Sessions look wrong.
+- Recording conditions changed (new microphone, different room, different distance from the mic).
+- You imported clips that included noise or another person's voice by mistake.
+
+## Remove Incorrect Samples First
+
+Before adding more samples, check whether the existing ones are correct. If Jordan Lee's voice samples contain Priya Patel's speech, adding more clips can preserve the confusion rather than fix it.
+
+<Steps>
+  <Step title="Open Player Detail">
+    Select the Player from the Players List and press **E** or **Enter**. The screen shows their **Voice Clips**, when the voice print was **Computed**, and the total **Duration** of their clips.
+  </Step>
+  <Step title="Open Review Outliers">
+    Press **V** (**Review Outliers**). Before the list appears, TableSage recomputes the voice print and permanently deletes duplicate and outlier clips excluded from it. This automatic cleanup remains applied even if you cancel the review.
+  </Step>
+  <Step title="Listen to the ranked clips">
+    The first 20 clips appear in order from least to most similar to the voice print. Lower scores mean the clip sounds less like the Player's voice print. Moving to a row plays its clip. Press **R** to replay it, and press **Space** to toggle **Manual/Autoplay**.
+  </Step>
+  <Step title="Mark clips for deletion">
+    Press **D**, **Delete**, or **Backspace** to mark an incorrect clip for deletion and move to the next clip. The marked row stays visible, struck through and marked **✗**. Press **D** on it again to restore it. Listen before removing — a low similarity score does not prove a clip belongs to someone else.
+  </Step>
+  <Step title="Load more if needed">
+    Press **L** (**Load 20 More**) to append another batch of clips. Scores and ordering stay fixed during the review.
+  </Step>
+  <Step title="Confirm the removals">
+    Press **C** or click **Continue** to delete all marked clips, recompute the voice print once, and return to Player Detail. With no marked removals, Continue returns without recomputing again.
+  </Step>
+</Steps>
+
+<Warning>
+  Pressing **Cancel** or **Esc** discards pending removal marks, but the automatic cleanup that ran when the screen opened is permanent and cannot be undone. No draft is saved.
+</Warning>
+
+## Add Samples from a Processed Session
+
+**From Session** (**S** on the Players List) learns voice samples from a Session's current attendees and recomputes their voice prints. Use it if you chose **Not Now** at the end of processing and now want to learn from that reviewed recording, or to refresh samples after correcting speaker assignments.
+
+<Warning>
+  Only use this action after carefully checking the speaker assignments in the Session's transcript. A mislabeled line teaches TableSage the wrong voice for that Player.
+</Warning>
+
+<Steps>
+  <Step title="Verify the transcript is accurate">
+    Open the Session and review speaker assignments in the transcript before proceeding. Mislabeled lines in the transcript will be learned as incorrect voice samples.
+  </Step>
+  <Step title="Start From Session">
+    Press **S** on the Players List. Choose a Campaign from the drop-down, then choose a Session. Sessions with no transcript are dimmed and cannot be selected.
+  </Step>
+  <Step title="Wait for the update">
+    TableSage cuts clips from the current transcript, replaces each attendee's earlier clips from this Session, and recomputes their voice prints. A notification reports how many Players received new clips and how many clips were extracted.
+  </Step>
+</Steps>
+
+TableSage accepts only lines assigned to a Player with high confidence, and skips very short lines. Samples also pass through the outlier check automatically.
+
+## Import Clips from an External Folder
+
+Use this when you have separate `.wav` recordings of a person speaking that you want to use as voice references.
+
+<Steps>
+  <Step title="Open Folder Import">
+    On the Player's page (Player Detail), press **F** (**Folder Import**) and choose the folder. Subfolders are not searched; the folder must contain at least one `.wav` file at its top level.
+  </Step>
+  <Step title="Choose whether to clean the audio">
+    TableSage asks whether to **clean** the audio (remove noise and convert the format) before importing. Choose **Yes** for raw recordings and **No** for clips that are already clean, such as clips created by TableSage during Session processing.
+  </Step>
+  <Step title="Handle a repeat import">
+    If you import from the same folder again, TableSage asks before replacing the clips from the earlier import.
+  </Step>
+  <Step title="Review the report">
+    TableSage reports how many clips were imported, replaced, skipped because they could not be used, and removed as outliers. If no clip could be used, the voice print is left unchanged.
+  </Step>
+</Steps>
+
+## Recompute and Clean Up Voice Prints
+
+On the Player's page, open **Other actions** (**?**) for these maintenance options:
+
+- **Recompute** rebuilds the voice print from all clips on disk without deleting anything. This is usually only useful after a bug in the application, since TableSage keeps voice prints up to date automatically.
+- **Clean Up** does the same recompute and then **permanently deletes** the duplicate and outlier clips it excluded. TableSage asks for confirmation first. Use this only to recover disk space; these clips are never used when processing voice prints.
+
+**Recompute All Voice Prints**, under **Other actions** on the Players List, runs a recompute for every Player at once. If it fails partway through, it reports which Player it stopped at and how many it finished.
+
+## How Many Samples Are Enough
+
+The Players List shows a red **0** in the Samples column for any Player with no voice print yet. Once a Player has clips, the Voice Print column shows *ready*. More samples from varied sessions generally improve recognition, though quality matters more than quantity — a small set of accurate clips outperforms a large set with mislabeled speech.
+
+## What Changes with New Recording Conditions
+
+If recording conditions change significantly — new microphone, new room acoustics, or a different distance from the source — older clips may represent the Player's voice less accurately than new ones. After processing a few Sessions under the new conditions, use **From Session** to refresh the voice samples, and consider using **Review Outliers** to remove clips from the old conditions that now score as outliers.
+
+The settings that control outlier detection (how different a clip must be to count as an outlier, and the minimum number of clips to keep) are stored in the workspace's `.tablesage/settings.yaml` under `remove_outliers`. Adding a new batch of samples can change which clips count as outliers.

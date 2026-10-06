@@ -1,0 +1,131 @@
+---
+title: "Processing State and Artifact Freshness in TableSage"
+sidebarTitle: "Processing State"
+description: "Understand how TableSage tracks which outputs are current or out of date, what fingerprinting covers, when to regenerate, and how to restart completed steps."
+---
+
+Every processed Session has a `processing_state.json` file in its folder that records which steps have completed, the fingerprints of every input those steps used, and any saved review decisions. TableSage reads this file — not the database — to determine which artifacts are current, out of date, or missing. Understanding how freshness works helps you know when to regenerate outputs, why a current-looking output might still reflect old information, and how to recover when processing needs to be restarted.
+
+Session files live in `campaigns/<Campaign name>/<NNN>/`, where `NNN` is the sequence number padded to three digits (for example, `004`).
+
+## Freshness Indicators
+
+Session Detail displays each artifact with one of three marks:
+
+| Mark | Meaning |
+|---|---|
+| **●** | Current — the artifact exists and all its inputs match recorded fingerprints |
+| **◐** | Out of date — the artifact exists but at least one input has changed since it was built |
+| **○** | Missing — the artifact file (or section) does not exist |
+
+## What Causes an Artifact to Be Out of Date
+
+An existing artifact is out of date when any of the following apply:
+
+- A required output from the same producing step is missing, even if this artifact's own file exists.
+- Its producing step has no completion record, or that record's `complete` flag is false.
+- A currently required input has no recorded fingerprint.
+- An artifact it depends on is itself missing or out of date.
+- An input's current fingerprint differs from the fingerprint recorded when the step completed.
+- An interrupted pair write left `.audio-import-incomplete` (Input Audio and Normalized Review Audio) or `.ledger-generation-incomplete` (Ledger and Scene Breakdown).
+
+Freshness propagates through the dependency chain. A missing Import Audio output can make Input Audio stale, which makes the Transcript stale, and so on through reviewed transcripts and generated outputs.
+
+<Note>
+  The `completed_at` timestamp in a completion record is historical evidence, not the test of currentness. What matters is whether the recorded input fingerprints still match the current files.
+</Note>
+
+## What Is Fingerprinted
+
+TableSage records a SHA-256 digest of every input a step used when it completed. This covers:
+
+- **Transcript and review decisions** — changes to a transcript, spellcheck decisions, or speaker assignments invalidate the outputs built from them.
+- **System prompts** — a prompt change after an application upgrade can invalidate generated outputs even when no session file changed.
+
+These details are **not** fingerprinted and do not trigger freshness marks when changed:
+
+- Attendance and Roles
+- Session dates
+- Campaign Glossary contents
+- Model choices
+
+<Warning>
+  After changing attendance, Roles, Session dates, Glossary entries, or model choices, existing outputs stay marked **●** current but still reflect the old details. To apply the change, explicitly restart the step that uses that information — or use **Regenerate Artifact** for a specific output.
+</Warning>
+
+## The processing_state.json File
+
+`records` maps producer names to `{complete, completed_at, inputs}`. Each input entry has a `sha256` digest. File inputs also store `size` and `mtime_ns`, so unchanged files can be recognized without re-hashing. Section inputs hash canonical JSON with sorted keys and compact separators.
+
+Input keys use these formats:
+- `artifact:<name>` — an artifact in this Session
+- `artifact:<NNN>/<name>` — an artifact from another Session (by sequence number)
+- `prompt:<name>` — a packaged system prompt
+
+If `processing_state.json` is unreadable or invalid, TableSage tries `processing_state.json.bak`. If both fail, it uses empty state, which makes every artifact appear missing.
+
+## Required Outputs and Inputs by Producer
+
+The table below lists every producer name used in `records`, the outputs each must produce, and the inputs each fingerprints. A name without a file extension is a key in `sections`; a name prefixed `prompt:` is an installed system prompt.
+
+| Producer | Required Outputs | Required Inputs |
+|---|---|---|
+| `import_request` | `import_request` section | None |
+| `input_audio` | `input_audio.wav`, `normalized_review_audio.wav` | `import_request` |
+| `transcript` | `transcript.json`, `transcript.md` | `input_audio` |
+| `cleaned_transcript` | `cleaned_transcript.json` | `transcript`, `prompt:classify_backchannels` |
+| `name_correction_suggestions` | `name_correction_suggestions` section | `cleaned_transcript`, `prompt:suggest_name_corrections` |
+| `name_correction_decisions` | `name_correction_decisions` section | `name_correction_suggestions` |
+| `name_corrected_transcript` | `name_corrected_transcript.json` | `cleaned_transcript`, `name_correction_decisions` |
+| `new_speaker_assignments` | `new_speaker_assignments` section | `name_corrected_transcript`, `prompt:isolate_new_speakers` |
+| `reviewed_new_speaker_assignments` | `reviewed_new_speaker_assignments` section | `new_speaker_assignments`, `normalized_review_audio` |
+| `seeded_voice_samples` | `seeded_voice_samples` section | `reviewed_new_speaker_assignments` |
+| `identified_transcript` | `identified_transcript.json` | `name_corrected_transcript`, `seeded_voice_samples` |
+| `glossary_suggestions` | `glossary_suggestions` section | `identified_transcript`, `prompt:extract_glossary` |
+| `glossary_decisions` | `glossary_decisions` section | `glossary_suggestions` |
+| `extracted_glossary_terms` | `extracted_glossary_terms` section | `glossary_decisions` |
+| `spelling_suggestions` | `spelling_suggestions` section | `identified_transcript`, `extracted_glossary_terms`, `prompt:suggest_spelling_corrections` |
+| `spelling_decisions` | `spelling_decisions` section | `spelling_suggestions` |
+| `spellchecked_transcript` | `spellchecked_transcript.json` | `identified_transcript`, `spelling_decisions` |
+| `transcript_review_edits` | `transcript_review_edits` section | `spellchecked_transcript`, `normalized_review_audio` |
+| `reviewed_transcript` | `transcript_reviewed.json` | `spellchecked_transcript`, `transcript_review_edits` |
+| `role_transcript` | `role_transcript.json` | `reviewed_transcript` |
+| `transcript_sections` | `transcript_sections.json` | `role_transcript`, `prompt:section_transcript` |
+| `ledger` | `ledger.json`, `ledger.md`, `scene_breakdown.json` | `role_transcript`, `transcript_sections`, `prompt:generate_ledger` |
+| `player_introductions` | `player_introductions.json` | `role_transcript`, `transcript_sections`, `prompt:generate_player_introductions` |
+| `recap_summary` | `recap_summary.md` | `scene_breakdown`, `prompt:generate_recap_summary` |
+| `summary` | `summary.md` | `ledger`, `player_introductions`, `prompt:summarize_session`; previous Session's `recap_summary` when applicable |
+| `voice_print_decision` | `voice_print_decision` section | `reviewed_transcript` |
+| `voice_print_enhancement` | `voice_print_enhancement` section | `voice_print_decision` |
+
+## Restart a Completed Step
+
+You can restart any completed processing step — including automatic steps whose outputs are still current — from the Process Session screen.
+
+<Steps>
+  <Step title="Open Process Session">
+    On Session Detail, press **P** (**Process**).
+  </Step>
+  <Step title="Select the step">
+    Click the step's row to highlight it. Arrow keys move between review steps only and skip automatic rows, but clicking selects any row including automatic ones.
+  </Step>
+  <Step title="Restart">
+    Press **R** (**Restart from here**). A manual step reopens its review; an automatic step runs again. Processing continues through affected steps.
+  </Step>
+</Steps>
+
+<Warning>
+  Restarting any step before **Review Transcript** discards its saved edits and drafts. Choose the latest step that can apply your correction to minimize repeated work.
+</Warning>
+
+## Recovery Limits After an Upgrade
+
+Older processed Sessions may retain transcripts and outputs while lacking `normalized_review_audio.wav`. The installed version requires that file alongside `input_audio.wav` for Import Audio. If the normalized audio file is missing, both the speaker review record and the transcript review record can also lack the required audio fingerprint, making those steps out of date even if their other files are present.
+
+<Warning>
+  Do not create completion records, insert fingerprints, or manufacture the missing WAV file by hand. This has no supported migration that certifies older reviews against the new audio requirement. To recover, restart processing from **Import Audio** on the Process Session screen.
+</Warning>
+
+Check all three conditions before deciding on recovery: the normalized file's presence, the speaker review's recorded audio fingerprint, and the transcript review's recorded audio fingerprint. Restoring the file alone cannot make a record current if its required fingerprint was never recorded.
+
+**Regenerate Artifact** requires a current reviewed transcript, so it cannot repair a stale import or review. **Regenerate All Outputs** skips Sessions without a current completed transcript review. Fix upstream processing first.

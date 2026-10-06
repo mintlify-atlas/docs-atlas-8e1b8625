@@ -1,0 +1,106 @@
+---
+title: "Prepare the Next Session with Previously On and Opportunities"
+sidebarTitle: "Prepare Next Session"
+description: "Build a 'Previously On' recap for the table and generate campaign opportunities to bring earlier threads back into play before your next session."
+---
+
+TableSage offers two preparation tools on Campaign Detail that turn the history of your processed sessions into practical prep material. **Create Previously On** helps you pick which scenes are worth recalling and writes a short "previously on…" recap you can read aloud to the table. **Generate Opportunities** suggests ways that established campaign elements — NPCs, objects, commitments, places — could return usefully in the session you have in mind. Both tools read the scene breakdowns produced during processing and send campaign text to an LLM to write their results.
+
+Neither tool saves anything inside the workspace. Each produces a Markdown file that you save yourself. Keep these files outside the workspace's `campaigns/` folder, which TableSage manages directly.
+
+## What You Need First
+
+You need a campaign with at least one processed session and some idea of what you expect next time. Both preparation tools read sessions in number order:
+
+- They ignore the highest-numbered session if it has no imported audio yet.
+- They require every other session to have a **current, complete scene breakdown**. If any session does not qualify, TableSage stops and lists the problem sessions with explanations.
+
+Session dates do not determine this order — they are used separately when TableSage chooses the prior recap for a session summary. This matters if you later add a recording of an earlier game: that new session still gets the highest number, so once processed, the tools read it last. Check the starting situation each tool shows before continuing.
+
+To bring the history up to date:
+
+1. From the Welcome screen, press **C** and open your campaign.
+2. If any session's outputs are out of date, press **?** to open **Other actions** and press **O** (**Regenerate All Outputs**). See [Regenerate Every Session in a Campaign](/guides/review-and-export#regenerate-every-session-in-a-campaign).
+3. Complete processing for any sessions that were skipped because their transcript reviews are incomplete or out of date, then regenerate again.
+4. If a listed session has no recording at all — for example, a game that was never recorded — delete it. Regenerate All Outputs cannot build anything for it.
+
+Once the history is current, choose either preparation tool from **Other actions** (**?**). You can use one or both; neither depends on the other's result.
+
+## Create Previously On
+
+Press **?** to open **Other actions**, then press **V** (**Create Previously On**). The tool works in three stages.
+
+<Steps>
+
+### Say what is coming
+
+TableSage reads the campaign and shows three things:
+
+- **Starting situation** — pre-filled from where the highest-numbered included session ended. Edit it to match how you actually plan to open.
+- **What might happen next session?** — a free-text field for your notes on where play may go.
+- **Campaign ingredients** — up to five candidates in each of *People & Factions*, *Threads & Commitments*, *Active Pressures*, and *Places & Objects*, each shown with its current state. Focus any ingredient to read the scenes it comes from. Press **Space** or **Enter** to select the ones that matter.
+
+Select at least one ingredient or write some notes, then choose **Continue** or press **C** with focus outside a text field.
+
+<Note>
+If a suggested ingredient looks wrong, correct it in your notes rather than treating it as established fact. The suggestions are drawn from scene breakdowns, which reflect what happened during play.
+</Note>
+
+For example, if next time the party will return to a harbor to collect a promised permit, select the official and the permit commitment as ingredients, and note that the party intends to collect what was promised.
+
+### Choose the scenes
+
+TableSage recommends scenes from across the campaign, marking them **★ Scout**, with a rationale for each that only you see. The full list shows every session and its scenes; you may choose any scenes, not only the recommended ones.
+
+- Press **Space** or **Enter** to add or remove a scene, or to expand a session.
+- Focus a scene to read its full record.
+
+Choose scenes that give players the context they need: the original bargain, any changed conditions, and where the party ended last time.
+
+### Save the recap
+
+Choose **Continue** (**C**), pick a destination, and TableSage writes a concise recap covering only the scenes you chose. The suggested filename names the campaign and the next session number.
+
+If the file already exists, TableSage asks you to confirm before replacing it; the old file stays intact until the new one is written. If saving fails, fix the cause and choose **Retry Save**.
+
+**Back** returns to the previous stage. **Exit** (or **Esc**) asks before discarding your inputs, because this tool does not keep drafts.
+
+</Steps>
+
+## Generate Opportunities
+
+Press **?** to open **Other actions**, then press **Y** (**Generate Opportunities**).
+
+<Steps>
+
+### Describe the next session
+
+TableSage shows where the campaign currently stands — its ending situation — and asks **What might happen next session?** Describe the situation you expect in concrete terms, for example: *"The party returns to the harbor to claim the permit. They may need to persuade the official or find another route out."*
+
+This field is required. Move focus out of the prompt with **Tab**, then press **G** or choose **Generate**.
+
+### Review the opportunities
+
+TableSage returns up to five **opportunities**. Each one recalls something established earlier in the campaign and suggests a concrete way it could connect with the situation you described. Fewer results than five is normal; none is possible when nothing fits well — in that case, try rewording your prompt.
+
+Opportunities favor ways for your players to discover and use an old element themselves. A returning element might gain **new meaning** (later events recontextualise it) or **new utility** (the players can now use it as a tool). Purely emotional callbacks are also valid. TableSage clearly separates what happened in play from what it is proposing, so you can tell established fact from suggestion.
+
+You can revise your prompt and generate again as many times as you like. Each new result replaces the previous one, and nothing is kept unless you save it.
+
+<Note>
+If your campaign is too large for the model to read in one pass, TableSage says so instead of producing a partial result. In this case, consider whether the model you have selected supports a larger context window.
+</Note>
+
+### Save the result
+
+Press **C** outside the editable field or choose **Continue** to save the result as a Markdown file, then pick a destination.
+
+</Steps>
+
+## Put the Preparation to Use
+
+Open the saved Markdown files and read them before play. Check the Previously On recap against what your players should remember, and adapt the language for your voice at the table. Choose the opportunities that fit your game — proposed developments are possibilities for you to consider, not established campaign facts.
+
+You are ready when you have a recap you can read and any opportunities you want to keep in your notes. If a single-session recap is enough, [export the session's Recap Summary](/guides/review-and-export) instead.
+
+After the next game, [process the recording](/guides/process-session-returning-players) — or use the [new-player workflow](/guides/process-session-new-players) if someone without a usable voice print joins.

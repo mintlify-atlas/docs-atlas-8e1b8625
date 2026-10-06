@@ -1,28 +1,11 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
-  "name": "TableSage RPG",
+  "projectType": "saas",
+  "projectName": "TableSage RPG",
+  "projectDescription": "A terminal application that turns tabletop roleplaying session recordings into transcripts, session summaries, and a lasting campaign record.",
   "theme": "almond",
-  "colors": {
-    "primary": "#040404",
-    "light": "#d3fa63",
-    "dark": "#8c9454"
-  },
-  "favicon": "https://media.brand.dev/f9f89e53-2c20-4e71-ae4b-0537fd78ea64.png",
-  "logo": {
-    "light": "https://media.brand.dev/086ef306-b89b-49bb-971e-e100fab9e4d7.svg",
-    "dark": "https://media.brand.dev/086ef306-b89b-49bb-971e-e100fab9e4d7.svg"
-  },
-  "navbar": {
-    "primary": {
-      "type": "github",
-      "href": "https://github.com/erik-saltwell/tablesage"
-    }
-  },
-  "footer": {
-    "socials": {
-      "github": "https://github.com/erik-saltwell/tablesage"
-    }
-  },
+  "primaryColor": "#040404",
+  "lightColor": "#d3fa63",
+  "darkColor": "#8c9454",
   "navigation": {
     "tabs": [
       {
@@ -74,5 +57,23 @@
         ]
       }
     ]
-  }
+  },
+  "keyFeatures": [
+    "Audio transcription via ElevenLabs Scribe with speaker diarization",
+    "Local voice recognition using PyTorch and WeSpeaker voice prints",
+    "LLM-powered session summaries, ledgers, and recap generation via LiteLLM (OpenAI, Anthropic, Gemini)",
+    "Campaign Glossary for consistent names and terminology across sessions",
+    "'Previously On' recap and narrative opportunities for next-session preparation",
+    "Terminal UI built with Python and Textual",
+    "Audio processing and playback via FFmpeg",
+    "Local SQLite storage — data stays on your computer"
+  ],
+  "publicApiSurface": [
+    "tablesage (CLI entrypoint — launches TUI)",
+    "tablesage-rpg (alias CLI entrypoint)",
+    "tablesage report-help-topics",
+    "tablesage output-help-topic <topic_id>",
+    "tablesage report-schema",
+    "tablesage run-query <sql>"
+  ]
 }

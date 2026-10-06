@@ -1,0 +1,101 @@
+---
+title: "Build and Maintain Your Campaign Glossary"
+sidebarTitle: "Campaign Glossary"
+description: "Establish campaign-specific spellings, review AI-discovered terms, edit or delete entries, and keep terminology consistent across sessions."
+---
+
+Every Campaign in TableSage has its own Glossary: a shared reference of correct spellings for the people, places, factions, objects, and unusual terms that come up at the table. During processing, TableSage uses the Glossary to propose transcript corrections and to keep generated outputs consistent. Starting with even a handful of key names before your first Session makes a noticeable difference, and the Glossary grows naturally as you process more Sessions.
+
+Glossary management happens inside a campaign. From the Welcome screen, press **C**, open the Campaign, and press **G** to select its **Glossary** tab. Each Campaign has its own Glossary.
+
+## Add Terms Manually
+
+Add names before processing to give TableSage a head start on unusual spellings it might mishear.
+
+<Steps>
+  <Step title="Open the New Entry dialog">
+    On the Campaign's Glossary tab, press **N** (**New Entry**).
+  </Step>
+  <Step title="Enter the term and an optional description">
+    Type the correct **Term** — for example, *Tidewarden Coil* — and optionally a short **Description** that distinguishes it, such as *Harbor official who holds the party's travel permit*. Put the canonical spelling in Term and use Description for context.
+  </Step>
+  <Step title="Save">
+    Press **Enter** to save. Repeat for the names you expect in the recording.
+  </Step>
+</Steps>
+
+You can start with just a few important names and let the Glossary grow through processing. You don't need to add every term up front.
+
+## Review AI-Discovered Terms After Processing
+
+During processing, the **Extract Glossary Terms** step proposes new entries from the recording. TableSage opens the review screen automatically as part of the processing run. Use this workflow to accept, correct, and prune the proposals before they are committed to the Campaign's Glossary.
+
+<Steps>
+  <Step title="Correct spellings and descriptions">
+    Select a proposed entry and press **E** or **Enter** to edit its Term or Description. Correcting spellings here — for example, changing *Tide Warden Coil* to *Tidewarden Coil* — means the spellcheck step immediately downstream can propose the right fix.
+  </Step>
+  <Step title="Remove inaccurate entries">
+    Press **D** to delete any proposal that is wrong, invented, or not useful for the Campaign.
+  </Step>
+  <Step title="Add any missing terms">
+    If an important term was missed, press **N** to add it directly in this review.
+  </Step>
+  <Step title="Continue to the spellcheck">
+    Press **C** (**Continue**) when the list looks right. The remaining entries are added to the Campaign Glossary; terms already in the Glossary are skipped. The **Spellcheck Against Glossary** step that follows uses the expanded vocabulary immediately.
+  </Step>
+  <Step title="Review the spellcheck proposals">
+    Check the spellcheck's proposed replacements, including their occurrence counts. Do not assume every suggestion is correct — some may be false positives. Corrections you approve here are suggested again in later Sessions, so repeated mishearings become easier to handle over time.
+  </Step>
+</Steps>
+
+<Note>
+  To propose new terms from an already-processed Session, open **Other actions** (**?**) on Session Detail and choose **Extract Glossary** (**L**). This restarts processing from the glossary suggestion step.
+</Note>
+
+## Edit and Delete Existing Entries
+
+On the Campaign's Glossary tab, you can correct any entry at any time:
+
+- Select the entry and press **E** to change its spelling or description.
+- Press **D** to delete an entry you no longer want, then confirm when prompted.
+
+## Apply Glossary Changes to Already-Processed Sessions
+
+Changing the Glossary does not itself rewrite reviewed speech or refresh saved spelling suggestions. To apply a corrected name to a Session that has already been processed:
+
+<Steps>
+  <Step title="Open Process Session">
+    Open the Session, press **P** to go to Process Session, highlight **Review Transcript**, and press **R** (**Restart from here**).
+  </Step>
+  <Step title="Use Find/Replace for repeated names">
+    Press **F** (**Find/Replace**) to correct a name that appears many times in the transcript. For individual lines, press **Enter** to open **Edit Utterance**.
+  </Step>
+  <Step title="Confirm and finish">
+    Press **C** (**Confirm**) to complete the review, then let processing continue through the downstream steps.
+  </Step>
+</Steps>
+
+<Warning>
+  Restarting **Spellcheck Against Glossary** does not ask the LLM for new suggestions based on the edited Glossary — it only reopens the corrections that were saved during the original run. If that review opens with nothing to show, it completes automatically. To apply a Glossary change to reviewed speech, restart **Review Transcript** instead.
+</Warning>
+
+## Reuse a Glossary Across Campaigns
+
+You can export a Glossary and import it into another Campaign in any workspace.
+
+<Steps>
+  <Step title="Export from the source Campaign">
+    On Campaign Detail, press **?** to open **Other actions**, then choose **Export Glossary** (**X**). Save the JSON file — the default name is `glossary.json`.
+  </Step>
+  <Step title="Open the destination Campaign">
+    Navigate to the Campaign where you want to reuse the vocabulary.
+  </Step>
+  <Step title="Import the Glossary">
+    Open **Other actions** (**?**) and choose **Import Glossary** (**I**), then select the JSON file you exported.
+  </Step>
+  <Step title="Check the notification">
+    TableSage reports how many entries were added and how many duplicates were skipped. Review the Glossary tab to confirm the results.
+  </Step>
+</Steps>
+
+Import adds entries and skips any terms that already exist in the destination Glossary; it does not overwrite existing descriptions. If an existing entry's content needs changing, edit it directly. Always use a file created by **Export Glossary** — do not edit the JSON by hand.

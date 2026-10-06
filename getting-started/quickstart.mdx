@@ -1,0 +1,157 @@
+---
+title: "Get Started with TableSage RPG in 5 Steps"
+sidebarTitle: "Quickstart"
+description: "Create your first campaign and session, process a recording, and export a session summary with TableSage RPG in under an hour."
+---
+
+Once TableSage is installed and your API keys are configured, this page walks you through your first real processing run from start to finish: creating a campaign and session, attaching a recording, identifying who was at the table, and exporting the finished transcript and summary. Follow these steps in order the first time — each one sets up what the next step needs.
+
+<Note>
+  Processing time depends on the length of your recording and the speed of the API services you have configured. A three-hour session typically takes ten to twenty minutes for transcription alone. Plan to start a run and check back rather than watching it in real time.
+</Note>
+
+---
+
+<Steps>
+
+  <Step title="Launch TableSage from Your Workspace">
+    Open a terminal, navigate to the workspace directory you created during installation, and start the application:
+
+    ```sh
+    cd ~/Documents/tablesage
+    tablesage-rpg
+    ```
+
+    TableSage opens the **Welcome** screen.
+
+    <Tip>
+      Always launch TableSage from the same workspace directory. TableSage stores all campaigns, sessions, and voice data in the directory you start it from — launching from a different directory creates a separate, empty workspace.
+    </Tip>
+  </Step>
+
+  <Step title="Open Settings, Enter API Keys, and Save">
+    From the Welcome screen, press **S** to open **Settings**.
+
+    Fill in your API keys:
+
+    - **ElevenLabs** — required for every session; handles transcription and speaker diarization.
+    - **OpenAI**, **Anthropic**, and/or **Gemini** — required for whichever providers your chosen model tiers use.
+
+    Then choose a model for each tier using the dropdowns:
+
+    | Tier | Default | Used for |
+    | --- | --- | --- |
+    | **High** | `openai/gpt-6-astra` | Session artifacts, Previously On, Opportunities |
+    | **Medium** | `anthropic/claude-sonnet-4-5` | Glossary extraction, spellcheck, name corrections |
+    | **Low** | `anthropic/claude-haiku-4-5` | Remove Bad Utterances |
+
+    Each dropdown offers presets across Anthropic, OpenAI, and Gemini. If you prefer a different model, choose **Custom…** and type a model ID in `provider/model-name` form — for example, `openai/gpt-4o`.
+
+    When you are done, choose **Continue** — or move focus out of a key field and press **C**. On first save, TableSage tests each configured model and downloads local audio-processing models. This may take a few minutes.
+
+    <Tip>
+      You only need keys for the providers your selected models use, plus ElevenLabs. If you want to use a single provider for all three tiers, select models from that provider and leave the other key fields empty.
+    </Tip>
+  </Step>
+
+  <Step title="Create a Campaign">
+    From the Welcome screen, press **C** to open **Campaigns**, then press **N** for **New Campaign**.
+
+    Fill in the fields:
+
+    - **Name** — something recognisable, such as *Salt Marsh* or *Curse of Strahd*.
+    - **Description** — a brief note about the campaign (optional but useful).
+    - **Game System** — for example, *D&D 5e* or *OSE*.
+
+    Choose **Create Campaign**. Select the campaign in the list and press **E** or **Enter** to open **Campaign Detail**.
+  </Step>
+
+  <Step title="Add a Session and Attach a Recording">
+    On the **Sessions** tab of Campaign Detail, press **N** for **New Session**.
+
+    - **Name** — a short title for this session, such as *Arrival at the Harbor*.
+    - **Date** — the real calendar date of the session in `YYYY-MM-DD` format, such as `2026-10-01`.
+
+    Choose **Create Session**. TableSage opens **Session Detail**.
+
+    Next, attach your recording file. In Session Detail, use the file picker to locate the audio file for this session. TableSage accepts the audio formats FFmpeg can read, including `.mp3`, `.m4a`, `.wav`, `.ogg`, and `.flac`.
+
+    <Tip>
+      Use the highest-quality recording you have. Background noise and low volume make transcription and voice matching harder. If you have a lossless or high-bitrate recording, use that one rather than a compressed copy.
+    </Tip>
+  </Step>
+
+  <Step title="Add Attendees and Assign Roles">
+    The first session starts with an empty **Attendance** list. Add every person whose speech is in the recording, including the game master.
+
+    Press **Tab** to move focus to the Attendance table, then press **N** for **New Attendee**:
+
+    1. In the **Player** combo box, select an existing person or choose **&lt;New player…&gt;** and type their real-world name. Use the player's full name with normal capitalisation so players who share a first name stay distinct.
+    2. Assign a **Role**: press **R** to add a character name, or press **G** to mark the player as the Game Master.
+    3. Choose **Save**, then repeat for every attendee.
+
+    For example: Jordan Lee is the Player, and *Brother Hald* is their Role. Morgan Reyes is another Player with the *Game Master* Role. A player can hold more than one Role if they voiced multiple characters.
+
+    The **Samples** column shows how many voice samples each player's voice print was built from. A red **0** means the player has no voice print yet — TableSage will learn their voice from this recording during processing.
+
+    <Tip>
+      Double-check that every character name is spelled exactly as you want it to appear in the transcript and summary. TableSage uses these names throughout all generated documents.
+    </Tip>
+  </Step>
+
+  <Step title="Process the Session">
+    With all attendees listed, press **P** on Session Detail to begin **Process**.
+
+    TableSage chooses the processing workflow based on your attendees' voice prints:
+
+    - **Any attendee has a red 0 (no voice print)** — follow the [Process a Session with New Players](/guides/process-session-new-players) workflow. TableSage will collect voice samples from the recording and ask you to confirm speaker identities before producing the transcript.
+    - **Everyone already has a usable voice print** — follow the [Process a Session with Returning Players](/guides/process-session-returning-players) workflow. TableSage can match speakers automatically and move straight to transcript generation.
+
+    TableSage guides you through whichever path applies with on-screen prompts at each stage.
+
+    <Note>
+      Processing a long session can take ten to twenty minutes or more. Transcription runs on ElevenLabs servers, and the language-model steps that follow depend on your tier selections and the length of the transcript. You can leave the application running and return when it finishes.
+    </Note>
+  </Step>
+
+  <Step title="Review the Transcript and Approve Corrections">
+    After processing completes, TableSage presents the transcript for review. Read through it and look for:
+
+    - **Speaker misattributions** — lines assigned to the wrong player.
+    - **Misspelled names** — character names, place names, or invented terms that the transcription service rendered incorrectly.
+    - **Correction proposals** — for new-player sessions, TableSage proposes name corrections it inferred from context; review and accept or reject each one.
+
+    Make any adjustments, then confirm to proceed. Approved corrections are applied to the transcript and carried forward into every document TableSage generates from it.
+  </Step>
+
+  <Step title="Export Session Outputs">
+    From **Session Detail**, press **X** to open the **Export** options. TableSage can export:
+
+    - The corrected **transcript**
+    - The **session summary** (scene breakdown, key decisions, open loops, and ending situation)
+    - A **Previously On** recap suitable for sharing with players before the next session
+    - The updated **campaign Glossary**
+
+    Choose the outputs you want and confirm. TableSage writes the files to your workspace directory in a folder named after the session, ready to share or archive.
+  </Step>
+
+</Steps>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Process a Session with New Players" icon="user-plus" href="/guides/process-session-new-players">
+    Step-by-step guide to the new-player workflow: collecting voice samples, confirming speaker identities, and producing a transcript when TableSage doesn't know everyone's voice yet.
+  </Card>
+  <Card title="Process a Session with Returning Players" icon="users" href="/guides/process-session-returning-players">
+    The faster returning-player workflow for sessions where every attendee already has a voice print.
+  </Card>
+  <Card title="Concepts" icon="lightbulb" href="/concepts">
+    How voice recognition works, what happens during processing, and what each generated document contains.
+  </Card>
+  <Card title="Settings" icon="gear" href="/guides/settings">
+    Change your API keys, switch model tiers, or learn how shell environment variables override stored keys.
+  </Card>
+</CardGroup>

@@ -1,0 +1,69 @@
+---
+title: "TableSage Workspaces: Organizing Your Campaign Data"
+sidebarTitle: "Workspaces"
+description: "A TableSage workspace is the directory you launch the app from. Learn where campaigns, players, settings, and files are stored on disk."
+---
+
+A **workspace** is the directory where TableSage keeps your game data. It brings together your Players, Campaigns, Sessions, settings, and processing records in one place. A single workspace can hold several Campaigns and all the Players who participate in them — and the same TableSage installation can work with different workspaces simply by launching from different directories.
+
+## Choosing Your Workspace
+
+Your workspace is determined by the directory you launch TableSage from. On first launch, TableSage creates its internal `.tablesage/` subdirectory inside that directory.
+
+```sh
+cd ~/Documents/tablesage
+tablesage-rpg
+```
+
+Return to the same workspace by always launching from that same directory. Open a different workspace by launching from a different directory — each workspace maintains its own database, settings file, Players, and Campaigns independently.
+
+<Tip>
+  Keep a dedicated directory for each group you play with. Launching from the
+  right directory is all it takes to switch between them.
+</Tip>
+
+## What Lives in a Workspace
+
+All paths below are relative to the workspace directory.
+
+| Path | Purpose |
+|---|---|
+| `.tablesage/tablesage.db` | The database of Players, Campaigns, Sessions, attendance, Roles, Glossaries, and stored voice prints. |
+| `.tablesage/settings.yaml` | This workspace's settings, including model choices and processing options. The file includes a settings version that TableSage uses to detect when defaults have changed. |
+| `.tablesage/logs/` | Application and processing logs, including `tablesage.log`, useful for understanding activity and diagnosing problems. |
+| `.tablesage/agent-guide.md` | Instructions for an AI coding agent started in the workspace; replaced whenever a newer version of TableSage starts. |
+| `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` | Short pointer files that lead Codex, Claude Code, and Gemini CLI to the agent guide. TableSage creates them when missing and never modifies them afterward. |
+| `players/<player-name>/` | Audio clips of each Player's voice samples. |
+| `campaigns/<campaign-name>/` | A Campaign's files, with numbered session folders such as `001/` containing audio, transcripts, and generated artifacts. |
+| `checkpoints/` | The downloaded noise-removal model. It can be re-downloaded at any time and does not need to be preserved. |
+
+<Note>
+  The database and the files on disk work together. The database holds records
+  and relationships; the directories hold audio and documents. To fully preserve
+  a workspace, keep both the `.tablesage/` directory **and** the `players/` and
+  `campaigns/` folders.
+</Note>
+
+## The Settings File
+
+The `.tablesage/settings.yaml` file stores this workspace's configuration: which AI models to use, processing options, and other preferences. It includes a **settings version** field that TableSage uses to detect when new defaults are available. You can review and edit settings from the **Settings** screen inside the app (press **S** on the Welcome screen).
+
+## Custom Data Directory
+
+If you want the `.tablesage/` data directory to live somewhere other than your working directory, set the `TABLESAGE_DATA_DIR` environment variable to the desired path before launching:
+
+```sh
+export TABLESAGE_DATA_DIR=~/my-custom-data-path
+tablesage-rpg
+```
+
+When this variable is set, TableSage reads and writes its database, settings, and logs from that location instead of creating a `.tablesage/` folder in the current directory. Player and Campaign files are still written relative to the launch directory.
+
+## Shared API Keys
+
+API keys are stored once per user account and shared across all workspaces. You can add or update them in the **Settings** screen. Changes take effect immediately in the instance where you saved them; other running instances retain their previously loaded keys and need to be restarted to pick up the change.
+
+<Info>
+  Shell environment variables can override stored keys. See the Settings guide
+  for the full details on where keys are stored and how overrides work.
+</Info>
