@@ -50,20 +50,12 @@ The `.tablesage/settings.yaml` file stores this workspace's configuration: which
 
 ## Custom Data Directory
 
-If you want the `.tablesage/` data directory to live somewhere other than your working directory, set the `TABLESAGE_DATA_DIR` environment variable to the desired path before launching:
-
-```sh
-export TABLESAGE_DATA_DIR=~/my-custom-data-path
-tablesage-rpg
-```
-
-When this variable is set, TableSage reads and writes its database, settings, and logs from that location instead of creating a `.tablesage/` folder in the current directory. Player and Campaign files are still written relative to the launch directory.
+Set the `TABLESAGE_DATA_DIR` environment variable to use a custom directory for TableSage's data instead of the default location.
 
 ## Shared API Keys
 
 API keys are stored once per user account and shared across all workspaces. You can add or update them in the **Settings** screen. Changes take effect immediately in the instance where you saved them; other running instances retain their previously loaded keys and need to be restarted to pick up the change.
 
 <Info>
-  Shell environment variables can override stored keys. See the Settings guide
-  for the full details on where keys are stored and how overrides work.
+  Shell environment variables can override stored keys. See [Update Your Settings](/guides/settings) for the full details on where keys are stored and how overrides work.
 </Info>

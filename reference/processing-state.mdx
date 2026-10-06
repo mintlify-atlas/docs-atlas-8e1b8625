@@ -1,7 +1,7 @@
 ---
 title: "Processing State and Artifact Freshness in TableSage"
 sidebarTitle: "Processing State"
-description: "Understand how TableSage tracks which outputs are current or out of date, what fingerprinting covers, when to regenerate, and how to restart completed steps."
+description: "Understand how TableSage determines artifact freshness, what fingerprinting covers, when to regenerate outputs, and how to restart processing steps."
 ---
 
 Every processed Session has a `processing_state.json` file in its folder that records which steps have completed, the fingerprints of every input those steps used, and any saved review decisions. TableSage reads this file — not the database — to determine which artifacts are current, out of date, or missing. Understanding how freshness works helps you know when to regenerate outputs, why a current-looking output might still reflect old information, and how to recover when processing needs to be restarted.
@@ -10,13 +10,14 @@ Session files live in `campaigns/<Campaign name>/<NNN>/`, where `NNN` is the seq
 
 ## Freshness Indicators
 
-Session Detail displays each artifact with one of three marks:
+Session Detail displays each artifact with a freshness mark. The two marks you will see are:
 
 | Mark | Meaning |
 |---|---|
 | **●** | Current — the artifact exists and all its inputs match recorded fingerprints |
 | **◐** | Out of date — the artifact exists but at least one input has changed since it was built |
-| **○** | Missing — the artifact file (or section) does not exist |
+
+An artifact with no mark at all is missing: its file does not exist, or its section key is absent from `processing_state.json`.
 
 ## What Causes an Artifact to Be Out of Date
 

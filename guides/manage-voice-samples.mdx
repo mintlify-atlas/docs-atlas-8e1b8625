@@ -1,7 +1,7 @@
 ---
 title: "Improve Player Voice Recognition with Better Samples"
 sidebarTitle: "Voice Samples"
-description: "Add high-confidence voice clips from processed sessions, review outlier samples, recompute voice prints, and maintain accurate speaker identification over time."
+description: "Add voice clips from sessions, review and remove outlier samples, recompute voice prints, and keep speaker identification accurate over time."
 ---
 
 TableSage identifies who is speaking by comparing each line of audio against each Player's voice print — a model built from that person's voice clips. The more accurate those clips are, the more reliably TableSage assigns lines to the right speaker. Use this guide when recognition needs better samples, when a voice print has picked up the wrong person's voice, or when you have separate recordings you want to use as voice references. From the Welcome screen, press **P** to open the **Players** list.
@@ -103,3 +103,17 @@ The Players List shows a red **0** in the Samples column for any Player with no 
 If recording conditions change significantly — new microphone, new room acoustics, or a different distance from the source — older clips may represent the Player's voice less accurately than new ones. After processing a few Sessions under the new conditions, use **From Session** to refresh the voice samples, and consider using **Review Outliers** to remove clips from the old conditions that now score as outliers.
 
 The settings that control outlier detection (how different a clip must be to count as an outlier, and the minimum number of clips to keep) are stored in the workspace's `.tablesage/settings.yaml` under `remove_outliers`. Adding a new batch of samples can change which clips count as outliers.
+
+## Move Players Between Workspaces
+
+Both actions below are under **Other actions** (**?**) on the Players List. For a complete campaign transfer that includes Players and their voice samples, follow [Move a Campaign to Another Workspace](/guides/move-campaign-workspace) — it explains why Players must be imported before the Campaign. To transfer or back up only Players and their voice samples, use the following actions directly.
+
+**Export Players** (**X**) writes every Player and their voice clips to a single `players.zip`. Choose where to save it.
+
+**Import Players** (**I**) reads a `.zip` made by Export Players:
+
+- **New Player names** creates the Players.
+- **Existing Player names** adds clips they do not already have. Names are matched ignoring capitalization and surrounding spaces.
+- **Clips** skips identical clips, ignores files other than each Player's `.wav` clips, and recomputes voice prints.
+
+When it finishes, it reports how many Players were created and matched, and how many clips were imported and skipped. An archive with unsafe or unexpected contents is rejected with nothing changed, and TableSage shows what was wrong.
